@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="weibo:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/weibo_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="weibo/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="weibo" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
