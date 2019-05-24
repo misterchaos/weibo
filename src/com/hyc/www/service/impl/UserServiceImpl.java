@@ -35,7 +35,6 @@ import static com.hyc.www.util.UUIDUtils.getUUID;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program www
  * @description 负责提供用户相关服务
  * @date 2019-05-02 03:19
  */
@@ -43,18 +42,18 @@ public class UserServiceImpl implements UserService {
     /**
      * 游客使用的邮箱
      */
-    public static final String VISITOR_EMAIL = "visitor@www.com";
+    public static final String VISITOR_EMAIL = "visitor@weibo.com";
 
     private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
 
     /**
      * 系统账号id
      */
-    public static final BigInteger systemId = BigInteger.valueOf(0);
+    public static final BigInteger SYSTEM_ID = BigInteger.valueOf(0);
     /**
      * 开发者账号
      */
-    public static final BigInteger hycId = BigInteger.valueOf(1);
+    public static final BigInteger HYC_ID = BigInteger.valueOf(1);
 
 
     /**
@@ -157,28 +156,28 @@ public class UserServiceImpl implements UserService {
     /**
      * 校验用户名（微信号），是否合法，是否已被占用
      *
-     * @param wechatId 微信号
+     * @param weiboId 微信号
      * @return 返回传入的用户名
      */
     @Override
-    public ServiceResult checkWechatId(String wechatId) {
-        if(wechatId==null){
+    public ServiceResult checkWeiboId(String weiboId) {
+        if(weiboId==null){
             return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
         }
         try {
             //检查是否合法
-            if (!isValidWechatId(wechatId)) {
-                return new ServiceResult(Status.ERROR, WECHAT_ID_INVALID.message, wechatId);
+            if (!isValidWeiboId(weiboId)) {
+                return new ServiceResult(Status.ERROR, WECHAT_ID_INVALID.message, weiboId);
             }
             //检查是否重复
-            if (userDao.getUserByWechatId(wechatId) != null) {
-                return new ServiceResult(Status.ERROR, WECHAT_ID_USED.message, wechatId);
+            if (userDao.getUserByWeiboId(weiboId) != null) {
+                return new ServiceResult(Status.ERROR, WECHAT_ID_USED.message, weiboId);
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, wechatId);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, weiboId);
         }
-        return new ServiceResult(Status.SUCCESS, WECHAT_ID_VALID.message, wechatId);
+        return new ServiceResult(Status.SUCCESS, WECHAT_ID_VALID.message, weiboId);
     }
 
     /**
@@ -318,12 +317,12 @@ public class UserServiceImpl implements UserService {
         //游客统一使用此邮箱，便于将来批量删除游客数据
         visitor.setEmail(VISITOR_EMAIL);
         visitor.setName("游客");
-        visitor.setWechatId(getUUID());
+        visitor.setWeiboId(getUUID());
         try {
             if(userDao.insert(visitor)!=1){
                 return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,visitor);
             }
-            visitor = userDao.getUserByWechatId(visitor.getWechatId());
+            visitor = userDao.getUserByWeiboId(visitor.getWeiboId());
             if(visitor==null){
                 return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,null);
             }
@@ -349,12 +348,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private boolean isValidWechatId(String wechatId) {
-        if (wechatId == null || wechatId.trim().isEmpty()) {
+    private boolean isValidWeiboId(String weiboId) {
+        if (weiboId == null || weiboId.trim().isEmpty()) {
             return false;
         }
         String regex = "[\\w_]{6,20}$";
-        return wechatId.matches(regex);
+        return weiboId.matches(regex);
     }
 
     private boolean isValidPassword(String password) {

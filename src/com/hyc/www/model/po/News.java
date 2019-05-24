@@ -31,8 +31,8 @@ import java.math.BigInteger;
 public class News extends BaseEntity {
     @JSONField(name = "user_id")
     private BigInteger userId;
-    @JSONField(name = "moment_Id")
-    private BigInteger momentId;
+    @JSONField(name = "tweet_Id")
+    private BigInteger tweetId;
     private Boolean loved;
     private Boolean shared;
     private Boolean viewed;
@@ -46,12 +46,12 @@ public class News extends BaseEntity {
         this.userId = userId;
     }
 
-    public BigInteger getMomentId() {
-        return momentId;
+    public BigInteger getTweetId() {
+        return tweetId;
     }
 
-    public void setMomentId(BigInteger momentId) {
-        this.momentId = momentId;
+    public void setTweetId(BigInteger tweetId) {
+        this.tweetId = tweetId;
     }
 
     public Boolean getLoved() {

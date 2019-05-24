@@ -55,10 +55,10 @@ public interface UserService {
     /**
      * 校验用户名（微信号），是否合法，是否已被占用
      *
-     * @param wechatId 微信号
+     * @param weiboId 微信号
      * @return 返回传入的用户名
      */
-    ServiceResult checkWechatId(String wechatId);
+    ServiceResult checkWeiboId(String weiboId);
 
     /**
      * 通过用户id获取用户个人信息

@@ -36,98 +36,99 @@ import static com.hyc.www.util.ControllerUtils.returnJsonObject;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 负责朋友圈相关流程
+ * @description 负责微博相关流程
  * @date 2019-05-07 21:33
  */
-@ActionProvider(path = "/moment")
+@ActionProvider(path = "/tweet")
 public class TweetProvider extends BaseProvider {
     private final TweetService tweetService = (TweetService) new ServiceProxyFactory().getProxyInstance(new TweetServiceImpl());
 
     /**
-     * 提供发布朋友圈的业务流程
+     * 提供发布微博的业务流程
      *
-     * @name postMoment
+     * @name postTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.ADD_DO)
-    public void postMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void postTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tweet tweet = (Tweet) jsonToJavaObject(req.getInputStream(), Tweet.class);
         ServiceResult result;
-        result = tweetService.insertMoment(tweet);
+        result = tweetService.insertTweet(tweet);
         returnJsonObject(resp, result);
     }
 
     /**
-     * 提供删除朋友圈的业务流程
+     * 提供删除微博的业务流程
      *
-     * @name deleteMoment
+     * @name deleteTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.DELETE_DO)
-    public void deleteMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void deleteTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String momentId = req.getParameter("moment_id");
         ServiceResult result;
-        result = tweetService.removeMoment(new BigInteger(momentId));
+        result = tweetService.removeTweet(new BigInteger(momentId));
         returnJsonObject(resp, result);
     }
 
     /**
-     * 提供更新朋友圈的业务流程
+     * 提供更新微博的业务流程
      *
-     * @name updateMoment
+     * @name updateTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.UPDATE_DO)
-    public void updateMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void updateTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tweet tweet = (Tweet) jsonToJavaObject(req.getInputStream(), Tweet.class);
         ServiceResult result;
-        result = tweetService.updateMoment(tweet);
+        result = tweetService.updateTweet(tweet);
         returnJsonObject(resp, result);
     }
 
     /**
-     * 提供获取个人朋友圈的业务流程
+     * 提供获取自己所发的微博的业务流程
      *
-     * @name listMoment
+     * @name listTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
-    @Action(method = RequestMethod.MOMENT_DO)
-    public void listMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Action(method = RequestMethod.TWEET_DO)
+    public void listMyTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
         ServiceResult result;
-        result = tweetService.listMyMoment(new BigInteger(userId), new Integer(page));
+        result = tweetService.listMyTweet(new BigInteger(userId), new Integer(page));
         returnJsonObject(resp, result);
     }
 
     /**
-     * 提供获取朋友圈动态的业务流程
+     * 提供获取微博动态的业务流程
      *
      * @name listNews
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
-    @Action(method = RequestMethod.NEWS_DO)
-    public void listNews(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Action(method = RequestMethod.LIST_DO)
+    public void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
+        String sort = req.getParameter("sort");
         String page = req.getParameter("page");
         ServiceResult result;
-        result = tweetService.listNews(new BigInteger(userId), new Integer(page));
+        result = tweetService.listTweet(new BigInteger(userId), sort, new Integer(page));
         returnJsonObject(resp, result);
     }
 
 
     /**
-     * 提供获取朋友圈照片的业务流程
+     * 提供获取微博照片的业务流程
      *
      * @name loadPhoto
      * @notice none
@@ -142,8 +143,9 @@ public class TweetProvider extends BaseProvider {
         result = tweetService.listPhoto(new BigInteger(userId), new Integer(page));
         returnJsonObject(resp, result);
     }
+
     /**
-     * 提供朋友圈点赞的服务
+     * 提供微博点赞的服务
      *
      * @name love
      * @notice none

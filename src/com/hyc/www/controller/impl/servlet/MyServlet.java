@@ -37,9 +37,9 @@ import static com.hyc.www.provider.BaseProvider.toErrorPage;
  * @description 接收客户端请求，将其转发到controller
  * @date 2019-05-02 03:28
  */
-@MultipartConfig(location = "/home/pan/tomcat/webapps/www/upload")
-//@MultipartConfig(location = "C:\\Users\\Misterchaos\\Documents\\Java Develop Workplaces\\IDEA workspace\\www\\out\\artifacts\\wechat_war_exploded\\upload")
-@WebServlet("/www/*")
+//@MultipartConfig(location = "/home/pan/tomcat/webapps/weibo/upload")
+@MultipartConfig(location = "C:\\Users\\Misterchaos\\Documents\\Java Develop Workplaces\\IDEA workspace\\HYCWeiboSystem\\out\\artifacts\\HYCWeiboSystem_war_exploded\\upload")
+@WebServlet("/weibo/*")
 public class MyServlet extends HttpServlet {
 
     @Override
@@ -63,12 +63,12 @@ public class MyServlet extends HttpServlet {
         String url = req.getRequestURI();
         Set<String> keys = providerMap.keySet();
         Logger logger = Logger.getLogger(MyServlet.class);
-        logger.info("[请求url:]"+url+"[匹配provider]:"+url.substring(14));
+        logger.info("[请求url:]"+url+"[匹配provider]:"+url.substring(12));
         boolean isMatch=false;
         for (String key : keys) {
             //解析注解中的path信息，匹配ActionProvider
             String path =providerMap.get(key).getPath();
-            if (url.substring(14).equalsIgnoreCase(path)) {
+            if (url.substring(12).equalsIgnoreCase(path)) {
                 providerMap.get(key).doAction(req, resp);
                 logger.info("provider 分发完毕");
                 isMatch=true;

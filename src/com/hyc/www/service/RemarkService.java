@@ -36,7 +36,7 @@ public interface RemarkService {
      */
     ServiceResult addRemark(Remark remark);
     /**
-     * 查询一条朋友圈的评论
+     * 查询一条评论
      *
      * @param momentId 朋友圈id
      * @param page   页数

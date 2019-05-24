@@ -52,7 +52,6 @@ public class UploadServiceImpl implements UploadService {
      * @param part      文件
      * @param id        记录id
      * @param tableName 表名
-     * @return
      * @name uploadPhoto
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -73,7 +72,7 @@ public class UploadServiceImpl implements UploadService {
             } else if ("moment".equalsIgnoreCase(tableName)) {
                 Tweet tweet = new Tweet();
                 tweet.setId(new BigInteger(String.valueOf(id)));
-                tweet.setPhoto(fileName);
+//                tweet.setPhoto(fileName);
                 if (tweetDao.update(tweet) != 1) {
                     return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, tweet);
                 }

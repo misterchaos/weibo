@@ -37,7 +37,6 @@ import static com.hyc.www.util.ControllerUtils.returnJsonObject;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program www
  * @description 负责过滤需要登陆的页面的请求
  * @date 2019-05-09 15:41
  */
@@ -82,7 +81,7 @@ public class LoginFilter implements Filter {
             }
         }else {
             //已登陆用户检查登陆身份
-            if (path.startsWith("/www/moment") || path.startsWith("/www/friend")) {
+            if (path.startsWith("/weibo/moment") || path.startsWith("/weibo/friend")) {
                 //检查登陆身份
                 User user = (User) sess.getAttribute("login");
                 if (user != null && UserServiceImpl.VISITOR_EMAIL.equals(user.getEmail())) {

@@ -56,10 +56,9 @@ public class TestService {
         Tweet tweet =new Tweet();
         tweet.setOwnerId(BigInteger.valueOf(0));
         tweet.setContent("第一条朋友圈");
-        tweetService.insertMoment(tweet);
-        tweetService.removeMoment(BigInteger.valueOf(8));
-        tweetService.listMyMoment(BigInteger.valueOf(0),1);
-        tweetService.listNews(BigInteger.valueOf(184),1);
+        tweetService.insertTweet(tweet);
+        tweetService.removeTweet(BigInteger.valueOf(8));
+        tweetService.listMyTweet(BigInteger.valueOf(0),1);
 
     }
 }

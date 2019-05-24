@@ -17,17 +17,17 @@
 package com.hyc.www.service.impl;
 
 import com.hyc.www.dao.FriendDao;
-import com.hyc.www.dao.TweetDao;
 import com.hyc.www.dao.NewsDao;
+import com.hyc.www.dao.TweetDao;
 import com.hyc.www.dao.UserDao;
 import com.hyc.www.exception.DaoException;
 import com.hyc.www.exception.ServiceException;
 import com.hyc.www.factory.DaoProxyFactory;
-import com.hyc.www.model.builder.MomentVOBuilder;
+import com.hyc.www.model.builder.TweetVOBuilder;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Friend;
-import com.hyc.www.model.po.Tweet;
 import com.hyc.www.model.po.News;
+import com.hyc.www.model.po.Tweet;
 import com.hyc.www.model.po.User;
 import com.hyc.www.model.vo.TweetVO;
 import com.hyc.www.service.TweetService;
@@ -56,13 +56,13 @@ public class TweetServiceImpl implements TweetService {
      * 插入一条微博
      *
      * @param tweet 微博
-     * @name insertMoment
+     * @name insertTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Override
-    public ServiceResult insertMoment(Tweet tweet) {
+    public ServiceResult insertTweet(Tweet tweet) {
         StringBuilder message = new StringBuilder();
         try {
             //判空
@@ -70,7 +70,7 @@ public class TweetServiceImpl implements TweetService {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
             //检查长度
-            if(tweet.getContent().length()>800){
+            if (tweet.getContent().length() > 800) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CONTENT_TOO_LONG.message, tweet);
             }
             //检查内容
@@ -86,26 +86,6 @@ public class TweetServiceImpl implements TweetService {
             if (tweetDao.insert(tweet) != 1) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, tweet);
             }
-            //获取微博记录，返回id值,
-            tweet = tweetDao.getMomentByOwnerIdAndStatus(tweet.getOwnerId(), 1);
-            //查找用户的所有朋友，给他们插入news记录
-            List<Friend> friendList = friendDao.listByUserId(tweet.getOwnerId());
-            for (Friend friend : friendList) {
-                News news = new News();
-                news.setMomentId(tweet.getId());
-                news.setUserId(friend.getFriendId());
-                newsDao.insert(news);
-            }
-            //给用户自己插入news记录
-            News news = new News();
-            news.setMomentId(tweet.getId());
-            news.setUserId(tweet.getOwnerId());
-            newsDao.insert(news);
-            //创建一个新对象用于更新状态为0，表示该微博处理完毕
-            Tweet updateStatus = new Tweet();
-            updateStatus.setId(tweet.getId());
-            updateStatus.setStatus(0);
-            tweetDao.update(updateStatus);
         } catch (DaoException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, tweet);
@@ -125,81 +105,82 @@ public class TweetServiceImpl implements TweetService {
      */
     @Override
     public ServiceResult initNews(Friend friend) {
-        if(friend==null|friend.getFriendId()==null||friend.getUserId()==null){
+        if (friend == null | friend.getFriendId() == null || friend.getUserId() == null) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
         }
-        try{
-        List<Tweet> tweetList = tweetDao.listMyMomentByOwnerIdDesc(friend.getUserId(), 1000, 0);
-        for (Tweet tweet : tweetList) {
-            News news = new News();
-            news.setMomentId(tweet.getId());
-            news.setUserId(friend.getFriendId());
-            newsDao.insert(news);
-        }
-        tweetList = tweetDao.listMyMomentByOwnerIdDesc(friend.getFriendId(), 1000, 0);
-        for (Tweet tweet : tweetList) {
-            News news = new News();
-            news.setMomentId(tweet.getId());
-            news.setUserId(friend.getUserId());
-            newsDao.insert(news);
-        }}catch (DaoException e){
+        try {
+            List<Tweet> tweetList = tweetDao.listMyTweetByOwnerIdDesc(friend.getUserId(), 1000, 0);
+            for (Tweet tweet : tweetList) {
+                News news = new News();
+                news.setTweetId(tweet.getId());
+                news.setUserId(friend.getFriendId());
+                newsDao.insert(news);
+            }
+            tweetList = tweetDao.listMyTweetByOwnerIdDesc(friend.getFriendId(), 1000, 0);
+            for (Tweet tweet : tweetList) {
+                News news = new News();
+                news.setTweetId(tweet.getId());
+                news.setUserId(friend.getUserId());
+                newsDao.insert(news);
+            }
+        } catch (DaoException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
         }
-        return new ServiceResult(Status.SUCCESS,null,null);
+        return new ServiceResult(Status.SUCCESS, null, null);
     }
 
     /**
      * 删除一条微博
      *
-     * @param momentId 微博id
-     * @name removeMoment
+     * @param tweetId 微博id
+     * @name removeTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Override
-    public ServiceResult removeMoment(BigInteger momentId) {
+    public ServiceResult removeTweet(BigInteger tweetId) {
         try {
             //判空
-            if (momentId == null) {
+            if (tweetId == null) {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
             //检查是否存在
-            if (tweetDao.getMomentById(momentId) == null) {
-                return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, momentId);
+            if (tweetDao.getTweetById(tweetId) == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, tweetId);
             }
             //删除
             Tweet tweet = new Tweet();
-            tweet.setId(momentId);
+            tweet.setId(tweetId);
             if (tweetDao.delete(tweet) != 1) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, tweet);
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, momentId);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, tweetId);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, momentId);
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, tweetId);
     }
 
     /**
      * 更新一条微博
      *
      * @param tweet 要更新的微博
-     * @name updateMoment
+     * @name updateTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Override
-    public ServiceResult updateMoment(Tweet tweet) {
+    public ServiceResult updateTweet(Tweet tweet) {
         try {
             //判空
             if (tweet == null) {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
             //检查是否存在
-            if (tweetDao.getMomentById(tweet.getId()) == null) {
+            if (tweetDao.getTweetById(tweet.getId()) == null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, tweet);
             }
             //删除
@@ -224,7 +205,7 @@ public class TweetServiceImpl implements TweetService {
      * @date 2019/5/7
      */
     @Override
-    public ServiceResult listMyMoment(BigInteger userId, int page) {
+    public ServiceResult listMyTweet(BigInteger userId, int page) {
         //判空
         if (userId == null) {
             throw new ServiceException(ServiceMessage.NOT_NULL.message);
@@ -238,28 +219,19 @@ public class TweetServiceImpl implements TweetService {
             return new ServiceResult(Status.ERROR, ServiceMessage.PAGE_INVALID.message, null);
         }
         try {
-            List<Tweet> tweetList = tweetDao.listMyMomentByOwnerIdDesc(userId, limit, offset);
+            List<Tweet> tweetList = tweetDao.listMyTweetByOwnerIdDesc(userId, limit, offset);
             if (tweetList == null || tweetList.size() == 0) {
                 return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_MOMENT.message, tweetList);
             }
             User user = userDao.getUserById(userId);
             //将微博和用户信息转化成微博视图层对象
             for (Tweet tweet : tweetList) {
-                News news = null;
-                try {
-                    news = newsDao.getNewsByMomentIdAndUserId(tweet.getId(), userId);
-                } catch (DaoException e) {
-                    e.printStackTrace();
-                }
-                if (news == null) {
-                    return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
-                }
-                toMomentVOObject(momentVOList, news, tweet, user);
+                toTweetVOObject(momentVOList, tweet, user);
             }
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS,null, momentVOList);
+        return new ServiceResult(Status.SUCCESS, null, momentVOList);
     }
 
     /**
@@ -267,13 +239,14 @@ public class TweetServiceImpl implements TweetService {
      *
      * @param userId 用户id
      * @param page   页数
-     * @name listNews
+     * @param sort   分类
+     * @name listTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Override
-    public ServiceResult listNews(BigInteger userId, int page) {
+    public ServiceResult listTweet(BigInteger userId, String sort, int page) {
         //判空
         if (userId == null) {
             throw new ServiceException(ServiceMessage.NOT_NULL.message);
@@ -284,40 +257,33 @@ public class TweetServiceImpl implements TweetService {
         if (offset < 0) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PAGE_INVALID.message, null);
         }
-        List<TweetVO> momentVOList = new LinkedList<>();
+        List<TweetVO> tweetVOList = new LinkedList<>();
         try {
-            List<News> newsList;
-            newsList = newsDao.listNewsByUserId(userId, limit, offset);
-            //查找微博动态
-            if (newsList == null || newsList.size() == 0) {
-                if(page==1){
-                    return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_NEWS.message, momentVOList);
-                }
-                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_MORE.message, momentVOList);
+            List<Tweet> tweetList;
+            //sort为空则查询所有微博
+            if (sort == null||sort.trim().isEmpty()) {
+                tweetList = tweetDao.listTweetDesc(limit, offset);
+            } else {
+                tweetList = tweetDao.listTweetBySortDesc(sort, limit, offset);
             }
             //根据动态中的微博id获取微博数据
-            for (News news : newsList) {
-                Tweet tweet = tweetDao.getMomentById(news.getMomentId());
+            for (Tweet tweet : tweetList) {
                 //获取微博的发布者的用户信息
                 User user = userDao.getUserById(tweet.getOwnerId());
-                if(user==null){
-                    return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, momentVOList);
+                if (user == null) {
+                    return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, tweetVOList);
                 }
                 //将微博和动态信息转化成微博视图层对象
-                toMomentVOObject(momentVOList, news, tweet, user);
+                toTweetVOObject(tweetVOList, tweet, user);
                 //统计浏览量
-                if(!news.getViewed()){
-                    tweet.setView(tweet.getView()+1L);
-                    tweetDao.update(tweet);
-                    news.setViewed(true);
-                    newsDao.update(news);
-                }
+                tweet.setView(tweet.getView() + 1L);
+                tweetDao.update(tweet);
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, momentVOList);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, tweetVOList);
         }
-        return new ServiceResult(Status.SUCCESS,null, momentVOList);
+        return new ServiceResult(Status.SUCCESS, null, tweetVOList);
     }
 
     /**
@@ -331,18 +297,18 @@ public class TweetServiceImpl implements TweetService {
      * @date 2019/5/8
      */
     @Override
-    synchronized  public ServiceResult love(BigInteger userId, BigInteger momentId) {
+    synchronized public ServiceResult love(BigInteger userId, BigInteger momentId) {
         if (userId == null || momentId == null) {
             throw new ServiceException(ServiceMessage.NOT_NULL.message);
         }
         News news;
         try {
-            news = newsDao.getNewsByMomentIdAndUserId(momentId, userId);
+            news = newsDao.getNewsByTweetIdAndUserId(momentId, userId);
             //检查news是否存在
             if (news == null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
             }
-            Tweet tweet = tweetDao.getMomentById(news.getMomentId());
+            Tweet tweet = tweetDao.getTweetById(news.getTweetId());
             if (tweet == null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
             }
@@ -355,7 +321,7 @@ public class TweetServiceImpl implements TweetService {
         } catch (DaoException e) {
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
         }
-        return new ServiceResult(Status.SUCCESS,null, news.getLoved());
+        return new ServiceResult(Status.SUCCESS, null, news.getLoved());
     }
 
     /**
@@ -383,12 +349,13 @@ public class TweetServiceImpl implements TweetService {
         }
         List<String> photoList = new LinkedList<>();
         try {
-                List<Tweet> tweetList = tweetDao.listPhoto(userId,limit,offset);
-                if(tweetList ==null|| tweetList.size()==0){
-                    return new ServiceResult(Status.ERROR, ServiceMessage.NO_MOMENT.message, null);
-                }
+            List<Tweet> tweetList = tweetDao.listPhoto(userId, limit, offset);
+            if (tweetList == null || tweetList.size() == 0) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.NO_MOMENT.message, null);
+            }
             for (Tweet tweet : tweetList) {
-                photoList.add(tweet.getPhoto());
+                //TODO 微博相册
+//                photoList.add(tweet.getPhoto());
             }
         } catch (DaoException e) {
             e.printStackTrace();
@@ -398,23 +365,21 @@ public class TweetServiceImpl implements TweetService {
     }
 
     /**
-     * 建造一个微博试图层对象集合，需要一个持久化对象集合，和一条动态记录，和该用户的信息
+     * 建造一个微博试图层对象集合，需要一个持久化对象集合，和该用户的信息
      *
      * @param momentVOList 试图层对象集合
-     * @param news         动态记录
-     * @param tweet       微博
+     * @param tweet        微博
      * @param user         该用户的信息
-     * @name toMomentVOObject
+     * @name toTweetVOObject
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/8
      */
-    private void toMomentVOObject(List<TweetVO> momentVOList, News news, Tweet tweet, User user) {
-        TweetVO momentVO = new MomentVOBuilder().setContent(tweet.getContent()).setUserId(tweet.getOwnerId())
+    private void toTweetVOObject(List<TweetVO> momentVOList, Tweet tweet, User user) {
+        TweetVO momentVO = new TweetVOBuilder().setContent(tweet.getContent()).setUserId(tweet.getOwnerId())
                 .setId(tweet.getId()).setRemark(tweet.getRemark()).setShare(tweet.getShare()).setUserName(user.getName())
-                .setView(tweet.getView()).setCollect(tweet.getCollect()).setLove(tweet.getLove()).setUserPhoto(user.getPhoto())
-                .setShared(news.getShared()).setViewed(news.getViewed()).setCollected(news.getCollected()).setPhoto(tweet.getPhoto())
-                .setLoved(news.getLoved()).setTime(tweet.getTime()).build();
+                .setView(tweet.getView()).setLove(tweet.getLove()).setUserPhoto(user.getPhoto())
+                .setTime(tweet.getTime()).build();
         momentVOList.add(momentVO);
     }
 

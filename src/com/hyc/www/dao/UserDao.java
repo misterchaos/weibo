@@ -31,7 +31,7 @@ import java.util.List;
  */
 public interface UserDao extends BaseDao {
     String TABLE = "user";
-    String ALL_FIELD = "email,wechat_id,phone,password,gender,signature,name,photo"
+    String ALL_FIELD = "email,weibo_id,phone,password,gender,signature,name,photo"
             + ",chat_background,location,online_status," + BASE_FIELD;
 
 
@@ -68,16 +68,16 @@ public interface UserDao extends BaseDao {
     /**
      * 通过用户名查询一个用户
      *
-     * @param wechatId 微信号
+     * @param weiboId 微信号
      * @return 用户对象
-     * @name getUserByWechatId
+     * @name getUserByWeiboId
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */
     @Result(entity = User.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where wechat_id = ? ")
-    User getUserByWechatId(String wechatId);
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where weibo_id = ? ")
+    User getUserByWeiboId(String weiboId);
 
     /**
      * @param name 用户昵称

@@ -43,7 +43,7 @@ public class UploadProvider extends BaseProvider {
 
     @Action(method = RequestMethod.UPLOADPHOTO_DO)
     public void uploadPhoto(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        Part part = req.getPart("photo");
+        Part part = req.getPart("file");
         Object id = req.getParameter("id");
         String tableName = req.getParameter("table");
         ServiceResult result;
@@ -53,7 +53,7 @@ public class UploadProvider extends BaseProvider {
 
     @Action(method = RequestMethod.BACKGROUND_DO)
     public void uploadBackground(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        Part part = req.getPart("photo");
+        Part part = req.getPart("file");
         Object id = req.getParameter("id");
         ServiceResult result;
         result = uploadService.uploadBackground(part, id);

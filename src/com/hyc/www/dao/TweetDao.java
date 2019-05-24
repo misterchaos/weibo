@@ -30,20 +30,20 @@ import java.util.List;
  */
 public interface TweetDao extends BaseDao {
     String TABLE = "tweet";
-    String ALL_FIELD = "owner_id,content,photo,time,love,remark,share,view,collect," + BASE_FIELD;
+    String ALL_FIELD = "owner_id,content,time,love,remark,share,view," + BASE_FIELD;
 
     /**
      * 通过朋友圈id查询一个朋友圈
      *
      * @param id 朋友圈id
-     * @name geMomentById
+     * @name geTweetById
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */
     @Result(entity = Tweet.class, returns = ResultType.OBJECT)
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where id = ? ")
-    Tweet getMomentById(Object id);
+    Tweet getTweetById(Object id);
 
     /**
      * 通过用户id和状态查询一个朋友圈
@@ -56,7 +56,7 @@ public interface TweetDao extends BaseDao {
      */
     @Result(entity = Tweet.class, returns = ResultType.OBJECT)
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where owner_id = ? and status = ? ")
-    Tweet getMomentByOwnerIdAndStatus(Object ownerId, Object stauts);
+    Tweet getTweetByOwnerIdAndStatus(Object ownerId, Object stauts);
 
 
     /**
@@ -65,14 +65,18 @@ public interface TweetDao extends BaseDao {
      * @param ownerId 用户id
      * @param limit  每页查询记录数
      * @param offset 起始记录数
-     * @name listMyMomentByOwnerIdDesc
+     * @name listMyTweetByOwnerIdDesc
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Result(entity = Tweet.class, returns = ResultType.LIST)
     @Query("select " + ALL_FIELD + " from " + TABLE + " where owner_id = ?  order by time desc limit ? offset ?  ")
-    List<Tweet> listMyMomentByOwnerIdDesc(Object ownerId, int limit, int offset);
+    List<Tweet> listMyTweetByOwnerIdDesc(Object ownerId, int limit, int offset);
+
+
+
+
 
     /**
      * 通过用户id查询所有自己发布的朋友圈
@@ -80,15 +84,46 @@ public interface TweetDao extends BaseDao {
      * @param ownerId 用户id
      * @param limit  每页查询记录数
      * @param offset 起始记录数
-     * @name listMyMomentByOwnerId
+     * @name listMyTweetByOwnerId
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Result(entity = Tweet.class, returns = ResultType.LIST)
     @Query("select " + ALL_FIELD + " from " + TABLE + " where owner_id = ?  order by time limit ? offset ?  ")
-    List<Tweet> listMyMomentByOwnerId(Object ownerId, int limit, int offset);
+    List<Tweet> listMyTweetByOwnerId(Object ownerId, int limit, int offset);
 
+
+
+    /**
+     * 通过分类逆序查询某个分类的微博
+     *
+     * @param sort 分类
+     * @param limit  每页查询记录数
+     * @param offset 起始记录数
+     * @name listTweetBySortDesc
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    @Result(entity = Tweet.class, returns = ResultType.LIST)
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where sort = ?  order by time desc limit ? offset ?  ")
+    List<Tweet> listTweetBySortDesc(Object sort, int limit, int offset);
+
+
+    /**
+     * 查询全部微博
+     *
+     * @param limit  每页查询记录数
+     * @param offset 起始记录数
+     * @name listTweetDesc
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    @Result(entity = Tweet.class, returns = ResultType.LIST)
+    @Query("select " + ALL_FIELD + " from " + TABLE + " order by time desc limit ? offset ?  ")
+    List<Tweet> listTweetDesc(int limit, int offset);
 
     /**
      * 通过用户id查询所有自己发布的朋友圈中的图片

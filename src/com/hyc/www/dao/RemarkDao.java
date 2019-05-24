@@ -30,12 +30,12 @@ import java.util.List;
  */
 public interface RemarkDao extends BaseDao{
     String TABLE = "remark";
-    String ALL_FIELD = "user_id,moment_id,content,time,love,collect,reply," + BASE_FIELD;
+    String ALL_FIELD = "user_id,tweet_id,content,time,love,collect,reply," + BASE_FIELD;
 
     /**
-     * 通过用户id逆序查询所有自己发布的朋友圈
+     * 通过用户id逆序查询一条微博下面的评论
      *
-     * @param momentId 朋友圈id
+     * @param tweetId 微博id
      * @param limit  每页查询记录数
      * @param offset 起始记录数
      * @name listRemarkDesc
@@ -44,8 +44,8 @@ public interface RemarkDao extends BaseDao{
      * @date 2019/5/14
      */
     @Result(entity = Remark.class, returns = ResultType.LIST)
-    @Query("select " + ALL_FIELD + " from " + TABLE + " where moment_id = ?  order by time limit ? offset ?  ")
-    List<Remark> listRemarkDesc(Object momentId, int limit, int offset);
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where tweet_id = ?  order by time limit ? offset ?  ")
+    List<Remark> listRemarkDesc(Object tweetId, int limit, int offset);
 
     /**
      * 通过评论id查询一个评论

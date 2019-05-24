@@ -33,12 +33,12 @@ public interface TweetService {
      * 插入一条微博
      *
      * @param tweet 微博
-     * @name insertMoment
+     * @name insertTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult insertMoment(Tweet tweet);
+    ServiceResult insertTweet(Tweet tweet);
 
 
     /**
@@ -56,24 +56,24 @@ public interface TweetService {
     /**
      * 删除一条微博
      *
-     * @param momentId 微博id
-     * @name removeMoment
+     * @param tweetId 微博id
+     * @name removeTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult removeMoment(BigInteger momentId);
+    ServiceResult removeTweet(BigInteger tweetId);
 
     /**
      * 更新一条微博
      *
      * @param tweet 要更新的微博
-     * @name updateMoment
+     * @name updateTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult updateMoment(Tweet tweet);
+    ServiceResult updateTweet(Tweet tweet);
 
     /**
      * 查询一个用户所发的所有微博
@@ -85,19 +85,21 @@ public interface TweetService {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult listMyMoment(BigInteger userId, int page);
+    ServiceResult listMyTweet(BigInteger userId, int page);
+
 
     /**
      * 查询一个用户可见的所有微博，包括自己的和朋友的
      *
      * @param userId 用户id
      * @param page   页数
-     * @name listNews
+     * @param sort   分类
+     * @name listTweet
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult listNews(BigInteger userId, int page);
+    public ServiceResult listTweet(BigInteger userId, String sort, int page);
 
     /**
      * 更新一个用户对一条微博的点赞状态

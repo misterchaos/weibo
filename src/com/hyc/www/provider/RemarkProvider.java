@@ -42,7 +42,7 @@ import static com.hyc.www.util.ControllerUtils.returnJsonObject;
 @ActionProvider(path = "/remark")
 public class RemarkProvider extends BaseProvider {
 
-    RemarkService remarkService = (RemarkService) new ServiceProxyFactory().getProxyInstance(new RemarkServiceImpl());
+    private final RemarkService remarkService = (RemarkService) new ServiceProxyFactory().getProxyInstance(new RemarkServiceImpl());
     /**
      * 提供发布评论的业务流程
      *
@@ -60,7 +60,7 @@ public class RemarkProvider extends BaseProvider {
     }
 
     /**
-     * 提供获取朋友圈评论的业务流程
+     * 提供获取评论的业务流程
      *
      * @name listRemark
      * @notice none
@@ -77,7 +77,7 @@ public class RemarkProvider extends BaseProvider {
     }
 
     /**
-     * 提供删除朋友圈评论的业务流程
+     * 提供删除评论的业务流程
      *
      * @name deleteRemark
      * @notice none

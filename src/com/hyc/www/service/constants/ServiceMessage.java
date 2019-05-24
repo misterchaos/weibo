@@ -46,15 +46,15 @@ public enum ServiceMessage {
     /**
      * 账号不存在
      */
-    ACCOUNT_NOT_FOUND("该微信账号不存在，请检查您的输入是否正确"),
+    ACCOUNT_NOT_FOUND("该账号不存在，请检查您的输入是否正确"),
     /**
-     * 微信号已存在
+     * 微博账号已存在
      */
-    WECHAT_ID_USED("您输入的微信号已被占用，请重新输入"),
+    WECHAT_ID_USED("您输入的微博账号已被占用，请重新输入"),
     /**
-     * 微信号不合法
+     * 微博账号不合法
      */
-    WECHAT_ID_INVALID("您输入的微信号不符合要求，请重新输入"),
+    WECHAT_ID_INVALID("您输入的微博账号不符合要求，请重新输入"),
     /**
      * 密码不符合要求
      */
@@ -98,7 +98,7 @@ public enum ServiceMessage {
     /**
      * 用户名有效
      */
-    WECHAT_ID_VALID("该微信号有效且未被占用"),
+    WECHAT_ID_VALID("该微博账号有效且未被占用"),
     /**
      * 获取个人信息成功
      */

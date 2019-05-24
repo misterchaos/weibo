@@ -30,10 +30,10 @@ import java.util.List;
  */
 public interface NewsDao extends BaseDao {
     String TABLE = "news";
-    String ALL_FIELD = "user_id,moment_id,loved,shared,viewed,collected," + BASE_FIELD;
+    String ALL_FIELD = "user_id,tweet_id,loved,shared,viewed,collected," + BASE_FIELD;
 
     /**
-     * 通过用户id查询所有自己可见的所有朋友圈动态
+     * 通过用户id查询所有自己可见的所有微博动态
      *
      * @param userId 用户id
      * @param limit  每页查询记录数
@@ -49,16 +49,16 @@ public interface NewsDao extends BaseDao {
 
 
     /**
-     * 通过朋友圈id和用户id查询一个朋友圈动态
+     * 通过微博id和用户id查询一个微博动态
      *
-     * @param momentId 朋友圈id
+     * @param tweetId 微博id
      * @param userId 用户id
-     * @name getNewsByMomentId
+     * @name getNewsByTweetId
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Result(entity = News.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where moment_id = ? and user_id = ? ")
-    News getNewsByMomentIdAndUserId(Object momentId,Object userId);
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where tweet_id = ? and user_id = ? ")
+    News getNewsByTweetIdAndUserId(Object tweetId,Object userId);
 }

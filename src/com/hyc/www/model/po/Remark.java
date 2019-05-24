@@ -28,8 +28,8 @@ public class Remark extends BaseEntity {
 
   @JSONField(name = "user_id")
   private BigInteger userId;
-  @JSONField(name = "moment_id")
-  private BigInteger momentId;
+  @JSONField(name = "tweet_id")
+  private BigInteger tweetId;
   private String content;
   private Timestamp time ;
   private Long love;
@@ -53,12 +53,12 @@ public class Remark extends BaseEntity {
   }
 
 
-  public BigInteger getMomentId() {
-    return momentId;
+  public BigInteger getTweetId() {
+    return tweetId;
   }
 
-  public void setMomentId(BigInteger momentId) {
-    this.momentId = momentId;
+  public void setTweetId(BigInteger tweetId) {
+    this.tweetId = tweetId;
   }
 
 

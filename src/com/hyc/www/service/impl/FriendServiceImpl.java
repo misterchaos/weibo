@@ -100,7 +100,7 @@ public class FriendServiceImpl implements FriendService {
             if(isFriend(friend)){
                 //查询自己与系统建立的聊天,用于查找发送好友申请那条消息并删除
                 message.setSenderId(friend.getFriendId());
-                Friend systemFriend = friendDao.getFriendByUIDAndFriendId(friend.getUserId(),UserServiceImpl.systemId);
+                Friend systemFriend = friendDao.getFriendByUIDAndFriendId(friend.getUserId(),UserServiceImpl.SYSTEM_ID);
                 if(systemFriend==null){
                     return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
                 }
@@ -108,9 +108,9 @@ public class FriendServiceImpl implements FriendService {
                 messageDao.delete(message);
             }else {
                 //如果对方是普通用户，需要发送加好友通知
-                if (!UserServiceImpl.systemId.equals(friend.getFriendId()) && !UserServiceImpl.systemId.equals(friend.getUserId())) {
+                if (!UserServiceImpl.SYSTEM_ID.equals(friend.getFriendId()) && !UserServiceImpl.SYSTEM_ID.equals(friend.getUserId())) {
                     //获取好友与系统的聊天，用于推送通知
-                    Friend systemFriend = friendDao.getFriendByUIDAndFriendId(UserServiceImpl.systemId, friend.getFriendId());
+                    Friend systemFriend = friendDao.getFriendByUIDAndFriendId(UserServiceImpl.SYSTEM_ID, friend.getFriendId());
                     //生成一条加好友通知消息
                     message.setChatId(systemFriend.getChatId());
                     message.setSenderId(user.getId());

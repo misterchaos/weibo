@@ -35,7 +35,7 @@ public class TestJson {
         );
         User user = JSONObject.toJavaObject(json,User.class);
         System.out.println(user.getId());
-        System.out.println(user.getWechatId());
+        System.out.println(user.getWeiboId());
         System.out.println(new Date(1309237).toString());
 
         System.out.println(user.toString());

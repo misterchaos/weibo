@@ -23,13 +23,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="host" value="localhost:8080/wechat"/>
+<c:set var="host" value="localhost:8080/weibo"/>
 <%--设置主机名--%>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>wechat</title>
-    <link rel="shortcut icon" type=image/x-icon href=https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico>
+    <title>weibo</title>
+    <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/static/img/icon.ico" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>
     <!--BEGIN——发送请求脚本-->
@@ -44,7 +44,7 @@
                 <a href="${pageContext.request.contextPath}/index.jsp"
                    style="color: #999;font-size: 44px;text-decoration: none"><img
                         src="${pageContext.request.contextPath}/static/img/logo.png" alt="logo"
-                        style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
+                        style="width: 100px;margin: 10px">随时随地，发现新鲜事</h2>
                 </a>
             </div>
         </div>
@@ -56,7 +56,7 @@
     </script>
     <div class="input-box">
         <div class="color-input-field">
-            <form  action="http://${host}/wechat/user?method=login.do" method="post">
+            <form  action="http://${host}/weibo/user?method=login.do" method="post">
                 <input id="index" type="submit" style="display: none">
             <h2 class="input-box-title">邮箱登陆</h2>
             <input type="text" required="required" class="form-control" id="email"
@@ -71,7 +71,7 @@
             <br>
             <div class="switch-button">
                 <a href="${pageContext.request.contextPath}/register.jsp">立即注册</a>
-                <a href="http://${host}/wechat/user?method=login.do&email=visitor" onclick="visitor()">| 游客模式</a>
+                <a href="http://${host}/weibo/user?method=login.do&email=visitor" onclick="visitor()">| 游客模式</a>
             </div>
             </form>
         </div>
@@ -128,7 +128,7 @@
 
     .submit-button {
         margin-top: 20px;
-        background-color: #1AAD19;
+        background-color: #D7281A;
         color: #FFFFFF;
         padding: 9px 18px;
         border-radius: 5px;

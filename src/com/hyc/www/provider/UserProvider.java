@@ -51,7 +51,6 @@ import static com.hyc.www.util.ControllerUtils.returnJsonObject;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program www
  * @description 用于处理用户相关业务流程
  * @date 2019-05-02 10:07
  */
@@ -227,11 +226,11 @@ public class UserProvider extends BaseProvider {
     public void update(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) jsonToJavaObject(req.getInputStream(), User.class);
         ServiceResult result;
-        if (user != null && user.getWechatId() != null) {
+        if (user != null && user.getWeiboId() != null) {
             User oldUser = (User) userService.getUser(user.getId()).getData();
-            if (!oldUser.getWechatId().equals(user.getWechatId())) {
+            if (!oldUser.getWeiboId().equals(user.getWeiboId())) {
                 //如果请求要求修改微信名，先检查用户名（微信号）是否合法
-                result = userService.checkWechatId(user.getWechatId());
+                result = userService.checkWeiboId(user.getWeiboId());
                 if (Status.ERROR.equals(result.getStatus())) {
                     returnJsonObject(resp, result);
                     return;
@@ -354,13 +353,13 @@ public class UserProvider extends BaseProvider {
     private void addToSystemChat(User user) {
         Friend friend = new Friend();
         //系统添加用户账号为好友
-        friend.setUserId(UserServiceImpl.systemId);
+        friend.setUserId(UserServiceImpl.SYSTEM_ID);
         friend.setFriendId(user.getId());
         friendService.addFriend(friend);
         //用户添加系统账号为好友
         friend.setAlias(null);
         friend.setUserId(user.getId());
-        friend.setFriendId(UserServiceImpl.systemId);
+        friend.setFriendId(UserServiceImpl.SYSTEM_ID);
         friendService.addFriend(friend);
         //将用户和系统账号（id=0）添加到同一个聊天中
         chatService.createFriendChat(friend);

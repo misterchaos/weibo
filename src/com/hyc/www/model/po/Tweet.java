@@ -25,21 +25,18 @@ import java.sql.Timestamp;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 朋友圈实体类
  * @date 2019-05-07 11:36
  */
-@Table(name = "moment")
+@Table(name = "tweet")
 public class Tweet extends BaseEntity {
     @JSONField(name = "owner_id")
     private BigInteger ownerId;
     private String content;
-    private String photo;
     private Timestamp time;
     private Long love;
     private Long remark;
     private Long share;
     private Long view;
-    private Long collect;
 
 
     public Timestamp getTime() {
@@ -50,13 +47,7 @@ public class Tweet extends BaseEntity {
         this.time = time;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
 
     public BigInteger getOwnerId() {
         return ownerId;
@@ -106,11 +97,5 @@ public class Tweet extends BaseEntity {
         this.view = view;
     }
 
-    public Long getCollect() {
-        return collect;
-    }
 
-    public void setCollect(Long collect) {
-        this.collect = collect;
-    }
 }

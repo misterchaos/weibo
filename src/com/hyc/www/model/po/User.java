@@ -30,8 +30,8 @@ import com.hyc.www.model.po.abs.BaseEntity;
 public class User extends BaseEntity {
     @Field(name = "email")
     private String email;
-    @Field(name = "wechat_id")
-    private String wechatId;
+    @Field(name = "weibo_id")
+    private String weiboId;
     @Field(name = "phone")
     private String phone;
     @Field(name = "password")
@@ -60,12 +60,12 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
-    public String getWechatId() {
-        return wechatId;
+    public String getWeiboId() {
+        return weiboId;
     }
 
-    public void setWechatId(String wechatId) {
-        this.wechatId = wechatId;
+    public void setWeiboId(String weiboId) {
+        this.weiboId = weiboId;
     }
 
     public String getPhone() {

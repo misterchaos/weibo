@@ -75,7 +75,7 @@ public class RemarkServiceImpl implements RemarkService {
         remark.setContent(toLegalText(remark.getContent()));
         try {
             //检查是否存在
-            Tweet tweet = tweetDao.getMomentById(remark.getMomentId());
+            Tweet tweet = tweetDao.getTweetById(remark.getTweetId());
             if (tweet == null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, remark);
             }
@@ -164,7 +164,7 @@ public class RemarkServiceImpl implements RemarkService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, remark);
             }
             //将评论数减一
-            Tweet tweet = tweetDao.getMomentById(remark.getMomentId());
+            Tweet tweet = tweetDao.getTweetById(remark.getTweetId());
             tweet.setRemark(tweet.getRemark() - 1L);
             if (tweetDao.update(tweet) != 1) {
                 throw new ServiceException("无法更新该朋友圈的评论数" + tweet.toString());
@@ -214,7 +214,7 @@ public class RemarkServiceImpl implements RemarkService {
         remarkVO.setLove(remark.getLove());
         remarkVO.setReply(remark.getReply());
         remarkVO.setTime(remark.getTime());
-        remarkVO.setMomentId(remark.getMomentId());
+        remarkVO.setTweetId(remark.getTweetId());
         return remarkVO;
     }
 

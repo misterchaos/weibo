@@ -20,7 +20,6 @@ public class Reply extends BaseEntity {
     private Timestamp time;
     private String content;
     private long love;
-    private long collect;
 
     public Timestamp getTime() {
         return time;
@@ -75,13 +74,6 @@ public class Reply extends BaseEntity {
     }
 
 
-    public long getCollect() {
-        return collect;
-    }
-
-    public void setCollect(long collect) {
-        this.collect = collect;
-    }
 
 
 

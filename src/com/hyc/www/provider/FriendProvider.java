@@ -156,11 +156,11 @@ public class FriendProvider extends BaseProvider {
             returnJsonObject(resp, result);
             return;
         }
-        if (UserServiceImpl.systemId.equals(friend.getFriendId())) {
+        if (UserServiceImpl.SYSTEM_ID.equals(friend.getFriendId())) {
             returnJsonObject(resp, new ServiceResult(ERROR, ServiceMessage.CANNOT_DELETE_SYSTEM.message, null));
             return;
         }
-        if (UserServiceImpl.hycId.equals(friend.getFriendId())) {
+        if (UserServiceImpl.HYC_ID.equals(friend.getFriendId())) {
             returnJsonObject(resp, new ServiceResult(ERROR, CANNOT_DELETE_HYC.message, null));
             return;
         }
