@@ -33,7 +33,7 @@
     <title>weibo</title>
     <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/static/img/icon.ico"/>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<%--    <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>--%>
+    <%--    <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>--%>
     <!--BEGIN——发送请求脚本-->
     <script>
         //post方法
@@ -57,6 +57,7 @@
                 }
             });
         }
+
         //ajax方法
         function ajaxJsonRequest(url, data, callback) {
             ajax({
@@ -79,9 +80,11 @@
             });
 
         }
+
         function ajax(options) {
             options = options || {};
             options.type = (options.type || "GET").toUpperCase();
+            options.async = options.async == null ? true : options.async;
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
@@ -93,12 +96,14 @@
                     }
                 }
             };
-            xhr.open(options.type, options.url, true);
+            console.log("是否异步" + options.async);
+            xhr.open(options.type, options.url, options.async);
             if (options.dataType != null) {
                 xhr.setRequestHeader('Content-Type', options.contentType);
             }
             xhr.send(options.data);
         }
+
         function urlEncode(url, request) {
             if (request == null) return '';
             var paramStr = url + '?';
@@ -208,7 +213,7 @@
                 </button>
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="loadWeibo(document.getElementById('news-box').dataset.sort,document.getElementById('news-box').dataset.page)">
+                        onclick="loadSelectWeibo()">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -220,7 +225,7 @@
                 </button>
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="loadMyMoment(document.getElementById('tweet-box').dataset.page)">
+                        onclick="loadMyTweet(document.getElementById('tweet-box').dataset.page)">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -426,6 +431,17 @@
                     </div>
                 </div>
                 <div class="info-detail">
+                    <label for="select-sort"></label>
+                    <select id="select-sort" style="    margin-left: 48px">
+                        <option value="篮球" name="sort">篮球</option>
+                        <option value="动漫" name="sort">动漫</option>
+                        <option value="明星" name="sort">明星</option>
+                        <option value="数码" name="sort">数码</option>
+                        <option value="媒体" name="sort">媒体</option>
+                        <option value="美女" name="sort">美女</option>
+                        <option value="搞笑" name="sort">搞笑</option>
+                        <option value="音乐" name="sort">音乐</option>
+                    </select>
                     <div class="info-detail-block" style="margin-left: 20px">
                         <label for="tweet-content"></label>
                         <textarea class="input-text-content" style="width: 70%" id="tweet-content" autofocus="autofocus"
@@ -438,26 +454,28 @@
         </div>
         <!--END——发微博窗口-->
         <!--BEGIN——查看微博窗口-->
-        <div id="news-box" data-page="1" data-sort='' class="info-box" style="display: block">
+        <div id="news-box" data-page="1" class="info-box" style="display: block">
             <div class="info-box-head">   
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">微博</a></div>
-                    <button onclick="loadWeibo(document.getElementById('news-box').dataset.sort,++document.getElementById('news-box').dataset.page)"
+                    <button onclick="nextWeiboPage();loadSelectWeibo();"
                             class="button" contenteditable="false">下页
                     </button>
-                    <button onclick="loadWeibo(document.getElementById('news-box').dataset.sort,--document.getElementById('news-box').dataset.page<1?
-                    ++document.getElementById('news-box').dataset.page:document.getElementById('news-box').dataset.page)"
+                    <button onclick="lastWeiboPage();loadSelectWeibo();"
                             class="button" contenteditable="false">上页
                     </button>
-                    <button onclick="loadSportWeibo()"
-                            class="button" contenteditable="false">体育
-                    </button>
-                    <button onclick="loadSportWeibo()"
-                            class="button" contenteditable="false">体育
-                    </button>
-                    <button onclick="loadAllWeibo()"
-                            class="button" contenteditable="false">全部
-                    </button>
+                    <select id="load-weibo" onchange="loadSelectWeibo()" class="button">
+                        <option value="全部" name="sort">全部</option>
+                        <option value="篮球" name="sort">篮球</option>
+                        <option value="体育" name="sort">体育</option>
+                        <option value="动漫" name="sort">动漫</option>
+                        <option value="明星" name="sort">明星</option>
+                        <option value="数码" name="sort">数码</option>
+                        <option value="媒体" name="sort">媒体</option>
+                        <option value="美女" name="sort">美女</option>
+                        <option value="搞笑" name="sort">搞笑</option>
+                        <option value="音乐" name="sort">音乐</option>
+                    </select>
                 </div>
             </div>
             <div id="${sessionScope.login.id}info" class="info-detail-box">
@@ -471,10 +489,10 @@
             <div class="info-box-head">   
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">微博</a></div>
-                    <button onclick="loadMyMoment(++document.getElementById('tweet-box').dataset.page)"
+                    <button onclick="loadMyTweet(++document.getElementById('tweet-box').dataset.page)"
                             class="button" contenteditable="false">下页
                     </button>
-                    <button onclick="loadMyMoment(--document.getElementById('tweet-box').dataset.page<1?
+                    <button onclick="loadMyTweet(--document.getElementById('tweet-box').dataset.page<1?
                     ++document.getElementById('tweet-box').dataset.page:document.getElementById('tweet-box').dataset.page)"
                             class="button" contenteditable="false">上页
                     </button>
@@ -887,16 +905,17 @@
         });
     }
 
-    //体育微博
-    function loadSportWeibo() {
-        loadWeibo('体育', document.getElementById('news-box').dataset.page);
-        document.getElementById('news-box').dataset.sort = "体育";
-    }
-
-    //全部微博
-    function loadAllWeibo() {
-        loadWeibo(null, document.getElementById('news-box').dataset.page);
-        document.getElementById('news-box').dataset.sort = null;
+    //加载微博
+    function loadSelectWeibo() {
+        var page = document.getElementById('news-box').dataset.page;
+        var select = document.getElementById("load-weibo");
+        var index = select.selectedIndex;
+        var sort = select[index].value;
+        if ("全部" === sort) {
+            loadWeibo(null, page);
+        } else {
+            loadWeibo(sort, page);
+        }
     }
 
     //加载微博动态
@@ -921,7 +940,7 @@
     }
 
     //加载我的微博
-    function loadMyMoment(page) {
+    function loadMyTweet(page) {
         var url = "http://${host}/weibo/tweet";
         var request = {
             method: "tweet.do",
@@ -930,11 +949,11 @@
         };
         alert("正在加载您的微博，请稍后...");
         postRequest(url, request, function (result) {
-            var moments = result.data;
+            var tweets = result.data;
             //加载之前先将之前的清空
             document.getElementById('tweet-box-content').innerHTML = '';
-            for (var i = 0; i < moments.length - 1; i++) {
-                addMomentBlockHtml(moments[i]);
+            for (var i = 0; i < tweets.length - 1; i++) {
+                addMomentBlockHtml(tweets[i]);
             }
         });
         showWindowOnRight('tweet-box');
@@ -961,12 +980,12 @@
     }
 
     //删除微博
-    function deleteMoment(moment_id) {
+    function deleteMoment(tweet_id) {
         if (confirm("是否确定要删除这条微博？")) {
             var url = 'http://${host}/weibo/tweet';
             var request = {
                 method: "delete.do",
-                moment_id: moment_id
+                tweet_id: tweet_id
             };
             postRequest(url, request, function (result) {
             });
@@ -976,7 +995,7 @@
     }
 
     //删除微博评论
-    function deleteRemark(remark_id, moment_id) {
+    function deleteRemark(remark_id, tweet_id) {
         if (confirm("是否确定要删除这条评论？")) {
             var url = 'http://${host}/weibo/remark';
             var request = {
@@ -984,7 +1003,7 @@
                 remark_id: remark_id
             };
             postRequest(url, request, function (result) {
-                addMomentDetailHtml(moment_id);
+                addMomentDetailHtml(tweet_id);
             });
         } else {
             return;
@@ -1111,29 +1130,30 @@
 
     //发布微博
     function postMoment() {
-        var content = document.getElementById("tweet-content").value;
-        //上传图片
-        var url = "http://${host}/weibo/upload?method=uploadfile.do";
-        var img = document.getElementById('tweet-photo-input').files;
-        var filename;
-        for (var i = 0; i < img.length; i++) {
-            var formData = new FormData();
-            formData.append('file', img[i]);
-            filename = uploadFile(url, formData);
-            content += filename;
-        }
-        var jsonStr = JSON.stringify({
-            owner_id: "${sessionScope.login.id}",
-            content: content
-        });
-        url = "http://${host}/weibo/tweet?method=add.do";
+        var content = document.getElementById("tweet-content").value + "</br>";
         if (!('' === content)) {
+            //上传图片
+            var url = "http://${host}/weibo/upload?method=uploadfile.do";
+            var img = document.getElementById('tweet-photo-input').files;
+            for (var i = 0; i < img.length; i++) {
+                var formData = new FormData();
+                formData.append('file', img[i]);
+                uploadFile(url, formData, function (filename) {
+                    var html = '<img src="${pageContext.request.contextPath}/upload/file/' + filename + '"\n' +
+                        'style="height: 100%;width: 100%;max-height:200px;max-width:200px;">\n';
+                    content += html;
+                });
+            }
+            var select = document.getElementById("select-sort");
+            var index = select.selectedIndex;
+            var jsonStr = JSON.stringify({
+                owner_id: "${sessionScope.login.id}",
+                content: content,
+                sort: select[index].value
+            });
+            url = "http://${host}/weibo/tweet?method=add.do";
             alert("正在发布微博，请稍后...");
             ajaxJsonRequest(url, jsonStr, function (result) {
-                if ("SUCCESS" === result.status) {
-
-                } else {
-                }
             });
             document.getElementById("tweet-content").value = '';
         } else {
@@ -1143,29 +1163,29 @@
     }
 
     //点赞微博
-    function loveMoment(moment_id, moment_love) {
+    function loveMoment(tweet_id, moment_love) {
         var url = 'http://${host}/weibo/tweet';
         var request = {
             method: "love.do",
-            moment_id: moment_id,
+            tweet_id: tweet_id,
             user_id:${sessionScope.login.id},
         };
         postRequest(url, request, function (result) {
             var islove = result.data;
-            var love = parseInt(document.getElementById(moment_id + "love").dataset.love);
+            var love = parseInt(document.getElementById(tweet_id + "love").dataset.love);
             console.log("当前点赞数" + love);
             if (islove) {
-                document.getElementById(moment_id + "love").innerText = '点赞(' + (love + 1) + ')';
-                document.getElementById(moment_id + "love").dataset.love = love + 1;
+                document.getElementById(tweet_id + "love").innerText = '点赞(' + (love + 1) + ')';
+                document.getElementById(tweet_id + "love").dataset.love = love + 1;
             } else {
-                document.getElementById(moment_id + "love").innerText = '点赞(' + (love - 1) + ')';
-                document.getElementById(moment_id + "love").dataset.love = love - 1;
+                document.getElementById(tweet_id + "love").innerText = '点赞(' + (love - 1) + ')';
+                document.getElementById(tweet_id + "love").dataset.love = love - 1;
             }
         });
     }
 
     //评论微博//TODO
-    function remarkMoment(moment_id) {
+    function remarkMoment(tweet_id) {
         var content = prompt("请输入评论", '');
         if (content == null) {
             return;
@@ -1174,7 +1194,7 @@
         var url = "http://${host}/weibo/remark?method=add.do";
         var request = JSON.stringify({
             user_id: "${sessionScope.login.id}",
-            moment_id: moment_id,
+            tweet_id: tweet_id,
             time: time,
             content: content
         });
@@ -1182,11 +1202,11 @@
             if (confirm("是否确定要发布该评论？")) {
                 alert("正在发布评论，请稍后...");
                 ajaxJsonRequest(url, request, function (result) {
-                    var remark = parseInt(document.getElementById(moment_id + "remark").dataset.remark);
+                    var remark = parseInt(document.getElementById(tweet_id + "remark").dataset.remark);
                     console.log("当前评论数" + remark);
-                    document.getElementById(moment_id + "remark").dataset.remark = remark + 1;
-                    document.getElementById(moment_id + "remark").innerText = '评论(' + (remark + 1) + ')';
-                    addMomentDetailHtml(moment_id);
+                    document.getElementById(tweet_id + "remark").dataset.remark = remark + 1;
+                    document.getElementById(tweet_id + "remark").innerText = '评论(' + (remark + 1) + ')';
+                    addMomentDetailHtml(tweet_id);
                 })
             } else {
                 return;
@@ -1198,7 +1218,7 @@
     }
 
     //回复一条评论
-    function replyRemark(moment_id, user_name) {
+    function replyRemark(tweet_id, user_name) {
         var content = prompt("请输入回复", "");
         if (content == null) {
             return;
@@ -1208,7 +1228,7 @@
         var url = "http://${host}/weibo/remark?method=add.do";
         var request = JSON.stringify({
             user_id: "${sessionScope.login.id}",
-            moment_id: moment_id,
+            tweet_id: tweet_id,
             time: time,
             content: content
         });
@@ -1216,10 +1236,10 @@
             if (confirm("是否确定要发布该回复？")) {
                 alert("正在发布回复，请稍后...");
                 ajaxJsonRequest(url, request, function (result) {
-                    var remark = parseInt(document.getElementById(moment_id + "remark").dataset.remark);
-                    document.getElementById(moment_id + "remark").dataset.remark = remark + 1;
-                    document.getElementById(moment_id + "remark").innerText = '评论(' + (remark + 1) + ')';
-                    addMomentDetailHtml(moment_id);
+                    var remark = parseInt(document.getElementById(tweet_id + "remark").dataset.remark);
+                    document.getElementById(tweet_id + "remark").dataset.remark = remark + 1;
+                    document.getElementById(tweet_id + "remark").innerText = '评论(' + (remark + 1) + ')';
+                    addMomentDetailHtml(tweet_id);
 
                 })
             } else {
@@ -1254,25 +1274,24 @@
     }
 
     //上传文件，返回文件名
-    function uploadFile(url, formData) {
-        var filename = null;
+    function uploadFile(url, formData, callback) {
         ajax({
             url: url,
             type: 'POST',
             data: formData,
+            async: false,
             success: function (data) {
                 var result = eval("(" + data + ")");
                 if (result.message != null && result.message !== '') {
                     alert("系统提示：" + result.message);
                 }
-                filename = result.data;
+                callback(result.data);
             },
             error: function (xhr, error, exception) {
                 alert("请求发送失败，请刷新浏览器重试或检查网络");
                 alert(exception.toString());
             }
         });
-        return filename;
     }
 
     //加载聊天列表
@@ -1412,43 +1431,6 @@
         document.getElementById(window_id).style.display = "";
         document.getElementById("menu-body").dataset.window = window_id;
         console.log("当前窗口id : " + document.getElementById("menu-body").dataset.window);
-    }
-
-    //加载发微博窗口
-    function loadPostMomentBox() {
-        var html = '<div class="info-box" id="info-box">\n' +
-            '            <div class="info-box-head">   \n' +
-            '                <div class="info-box-title">       \n' +
-            '                    <div class="info-box-title-box"><a class="info-box-title-text">写微博</a></div>\n' +
-            '                    <button id="post-tweet" onclick="postMoment()"\n' +
-            '                            style="float: right" contenteditable="false">发布\n' +
-            '                    </button>\n' +
-            '                </div>\n' +
-            '            </div>\n' +
-            '            <div id="${sessionScope.login.id}info" class="info-detail-box">\n' +
-            '                <div class="info-outline">\n' +
-            '                    <div class="info-head-photo">\n' +
-            '                        <img id="preview" src="${pageContext.request.contextPath}/upload/photo/upload.jpg" class="info-head-img"\n' +
-            '                             onclick="document.getElementById(\'input_file\').click()">\n' +
-            '                        <input type="file" name="file" id="input_file"\n' +
-            '                               accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"\n' +
-            '                               oninput="imgPreview(document.getElementById(\'input_file\'))" style="display: none">\n' +
-            '                    </div>\n' +
-            '                    <div class="info-head-info">\n' +
-            '                        <h3 class="info-head-nickname" style="    font-size: 30px;">单击左侧上传图片</h3>\n' +
-            '                    </div>\n' +
-            '                </div>\n' +
-            '                <div class="info-detail">\n' +
-            '                    <div class="info-detail-block" style="margin-left: 20px">\n' +
-            '                        <label for="tweet-content"></label>\n' +
-            '                        <textarea class="input-text-content" style="    width: 70%;" id="tweet-content" autofocus="autofocus" cols="100"\n' +
-            '                                  contenteditable="true" onchange="enterClick(\'post-tweet\')" placeholder="分享自己的动态..."\n' +
-            '                                  required="required" maxlength="300" oninput="enterClick(\'post-tweet\')"></textarea>\n' +
-            '                    </div>\n' +
-            '                </div>\n' +
-            '            </div>\n' +
-            '        </div>\n';
-        document.getElementById("info-box").innerHTML = html;
     }
 
     //加载图片
@@ -1602,7 +1584,8 @@
                 type: 'POST',
                 cache: false,
                 data: formData,
-                success: function (result) {
+                success: function (data) {
+                    var result = eval("(" + data + ")");
                     if (result.message != null && result.message !== '') {
                         alert("系统提示：" + result.message);
                     }
@@ -1757,21 +1740,21 @@
     }
 
     //显示微博详情
-    function addMomentDetailHtml(moment_id) {
+    function addMomentDetailHtml(tweet_id) {
         var html = '           <div id="' + tweet.id + '" class="info-detail-block" style="margin-left: 20px">\n' +
-            document.getElementById(moment_id).innerHTML +
+            document.getElementById(tweet_id).innerHTML +
             '                    </div>';
         document.getElementById("news-detail-box-content").innerHTML = html;
-        loadRemark(moment_id, 1);
+        loadRemark(tweet_id, 1);
         showWindowOnRight('news-detail-box');
     }
 
     //加载评论
-    function loadRemark(moment_id, page) {
+    function loadRemark(tweet_id, page) {
         var url = "http://${host}/weibo/remark";
         var request = {
             method: "list.do",
-            moment_id: moment_id,
+            tweet_id: tweet_id,
             page: page
         };
         alert("正在加载评论，请稍侯...");
@@ -1800,7 +1783,7 @@
             '                                    <button id="' + remark.id + 'love" data-love="' + remark.love + '" onclick="dev()" style="float: left"\n' +
             '                                            contenteditable="false" class="button">点赞\(' + remark.love + '\)\n' +
             '                                    </button>\n' +
-            '                                    <button id="' + remark.id + 'remark" data-reply="' + remark.reply + '" onclick="replyRemark(\'' + remark.moment_id + '\',\'' + remark.user_name + '\')" style="float: left"\n' +
+            '                                    <button id="' + remark.id + 'remark" data-reply="' + remark.reply + '" onclick="replyRemark(\'' + remark.tweet_id + '\',\'' + remark.user_name + '\')" style="float: left"\n' +
             '                                            contenteditable="false" class="button">回复' +
             '                                    </button>\n';
         var visitorArea =
@@ -1809,7 +1792,7 @@
             '                        </label>\n' +
             '                    </div>';
         var ownerArea =
-            '                                    <button onclick="deleteRemark(\'' + remark.id + '\',\'' + remark.moment_id + '\')" style="float: right" \n' +
+            '                                    <button onclick="deleteRemark(\'' + remark.id + '\',\'' + remark.tweet_id + '\')" style="float: right" \n' +
             '                                            contenteditable="false" class="button">删除\n' +
             '                                    </button>\n' +
             '                                </div>\n' +
@@ -1825,6 +1808,17 @@
 
     //插入一条微博动态
     function addNewsBlockHtml(tweet) {
+        document.getElementById("news-box-content").innerHTML += getWeiboHtml(tweet);
+    }
+
+
+    //插入一条用户的微博
+    function addMomentBlockHtml(tweet) {
+        document.getElementById("tweet-box-content").innerHTML += getWeiboHtml(tweet);
+    }
+
+    //产生一条微博的html代码
+    function getWeiboHtml(tweet) {
         var time = new Date(tweet.time).toLocaleString();
         var html = '           <div id="' + tweet.id + '" class="info-detail-block" style="margin-left: 20px;margin-bottom:0px;">\n' +
             '                        <label for="tweet-content" style="    margin-bottom: -47px;">\n' +
@@ -1834,10 +1828,8 @@
             '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + tweet.user_photo + '" alt=w"用户头像" class="my-photo">\n' +
             '                                    </div>\n' +
             '                                    <div onclick="addMomentDetailHtml(\'' + tweet.id + '\')" class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
-            '                                        <h3 class="my-name" style="color: #333">' + tweet.user_name + ' 发布于 ' + time + '</h3>\n' +
+            '                                        <h3 class="my-name" style="color: #333">' + tweet.user_name + ' 发布于 ' + time + ' [分类：' + tweet.sort + ']</h3>\n' +
             '                                        <div style="word-break: break-all;white-space: normal;    max-width: 70%">' + tweet.content + '</div>\n' +
-            '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + tweet.photo + '" style="position:relative;height: 100%;' +
-            '                                       max-width:500px;max-height:300px;width: 100%">\n' +
             '                                    </div>\n' +
             '                                    <button id="' + tweet.id + 'love" data-love="' + tweet.love + '" ' +
             '                                       onclick="loveMoment(\'' + tweet.id + '\',' + tweet.love + ')" style="float: left;height: 30px;"  class="button" \n' +
@@ -1846,9 +1838,6 @@
             '                                    <button id="' + tweet.id + 'remark" data-remark="' + tweet.remark + '" ' +
             '                                       onclick="remarkMoment(\'' + tweet.id + '\',' + tweet.remark + ')" style="float: left;height: 30px;"  class="button" \n' +
             '                                            contenteditable="false">评论\(' + tweet.remark + '\)\n' +
-            '                                    </button>\n' +
-            '                                    <button onclick="dev()" style="float: left;height: 30px;"  class="button" \n' +
-            '                                            contenteditable="false">收藏\(' + tweet.collect + '\)\n' +
             '                                    </button>\n' +
             '                                    <button onclick="dev()" style="float: left;height: 30px;"  class="button" \n' +
             '                                            contenteditable="false">转发\(' + tweet.share + '\)\n' +
@@ -1871,61 +1860,12 @@
             '                        </label>\n' +
             '                    </div>';
         if (tweet.owner_id ===${sessionScope.login.id}) {
-            document.getElementById("news-box-content").innerHTML += html + ownerArea;
+            return html + ownerArea;
         } else {
-            document.getElementById("news-box-content").innerHTML += html + visitorArea;
+            return html + visitorArea;
         }
     }
 
-    //插入一条用户的微博
-    function addMomentBlockHtml(tweet) {
-        var time = new Date(tweet.time).toLocaleString();
-        var html = '           <div id="' + tweet.id + '" class="info-detail-block" style="margin-left: 20px;margin-bottom:0px;">\n' +
-            '                        <label for="tweet-content" style="    margin-bottom: -47px;">\n' +
-            '                            <div class="info-detail-block" >               \n' +
-            '                                <div class="user-box" style="border-bottom: 1px solid #ccc;width:100%;">\n' +
-            '                                    <div class="user-photo">\n' +
-            '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + tweet.user_photo + '" alt=w"用户头像" class="my-photo">\n' +
-            '                                    </div>\n' +
-            '                                    <div onclick="addMomentDetailHtml(\'' + tweet.id + '\')" class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
-            '                                        <h3 class="my-name" style="color: #333">' + tweet.user_name + ' 发布于 ' + time + '</h3>\n' +
-            '                                        <div style="word-break: break-all;white-space: normal;    max-width: 70%">' + tweet.content + '</div>\n' +
-            '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + tweet.photo + '" style="position:relative;height: 100%;' +
-            '                                       max-width:500px;max-height:300px;width: 100%">\n' +
-            '                                    </div>\n' +
-            '                                    <button id="' + tweet.id + 'love" data-love="' + tweet.love + '" ' +
-            '                                       onclick="loveMoment(\'' + tweet.id + '\',' + tweet.love + ')" style="float: left;height: 30px;"  class="button"\n' +
-            '                                            contenteditable="false">点赞\(' + tweet.love + '\)\n' +
-            '                                    </button>\n' +
-            '                                    <button id="' + tweet.id + 'remark" data-remark="' + tweet.remark + '" ' +
-            '                                       onclick="remarkMoment(\'' + tweet.id + '\',' + tweet.remark + ')" style="float: left;height: 30px;"  class="button"\n' +
-            '                                            contenteditable="false">评论\(' + tweet.remark + '\)\n' +
-            '                                    </button>\n' +
-            '                                    <button onclick="dev()" style="float: left;height: 30px;"  class="button"\n' +
-            '                                            contenteditable="false">收藏\(' + tweet.collect + '\)\n' +
-            '                                    </button>\n' +
-            '                                    <button onclick="dev()" style="float: left;height: 30px;"  class="button"\n' +
-            '                                            contenteditable="false">转发\(' + tweet.share + '\)\n' +
-            '                                    </button>\n' +
-            '                                    <button onclick="" style="float: left;height: 30px;"  class="button"\n' +
-            '                                            contenteditable="false">浏览量\(' + tweet.view + '\)\n' +
-            '                                    </button>\n';
-
-        var visitorArea =
-            '                                </div>\n' +
-            '                            </div>\n' +
-            '                        </label>\n' +
-            '                    </div>';
-        var ownerArea =
-            '                                    <button onclick="deleteMoment(\'' + tweet.id + '\')" style="float: left;margin-left: 210px;height: 30px;"\n' +
-            '                                            class="button" contenteditable="false">删除\n' +
-            '                                    </button>\n' +
-            '                                </div>\n' +
-            '                            </div>\n' +
-            '                        </label>\n' +
-            '                    </div>';
-        document.getElementById("tweet-box-content").innerHTML += html + ownerArea;
-    }
 
     //插入微博照片
     function addPhotoHtml(photo) {
@@ -1994,6 +1934,19 @@
     function dev() {
         alert("该功能正在开发中，暂时不可用");
     }
+
+
+    function lastWeiboPage() {
+        if (document.getElementById('news-box').dataset.page === "1") {
+            return;
+        } else {
+            document.getElementById('news-box').dataset.page--;
+        }
+    }
+
+    function nextWeiboPage() {
+        document.getElementById('news-box').dataset.page++;
+    }
 </script>
 <!--END——程序执行脚本-->
 <!--BEGIN——websocket脚本-->
@@ -2051,6 +2004,7 @@
     loadChatListAndBox();
     loadFriendList();
     connectWebsocket();
+    loadSelectWeibo();
 </script>
 <!--END——预加载脚本-->
 </body>

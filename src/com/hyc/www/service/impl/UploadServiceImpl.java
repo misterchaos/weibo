@@ -94,7 +94,6 @@ public class UploadServiceImpl implements UploadService {
      *
      * @param part 文件
      * @param id   记录id
-     * @return
      * @name uploadBackground
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
