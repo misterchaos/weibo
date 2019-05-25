@@ -30,7 +30,7 @@ import java.util.List;
  */
 public interface TweetDao extends BaseDao {
     String TABLE = "tweet";
-    String ALL_FIELD = "owner_id,content,time,love,remark,share,view," + BASE_FIELD;
+    String ALL_FIELD = "owner_id,content,sort,time,love,remark,share,view," + BASE_FIELD;
 
     /**
      * 通过朋友圈id查询一个朋友圈

@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.hyc.www.util.StringUtils.toLegalText;
+import static com.hyc.www.util.StringUtils.toLegalTextIgnoreTag;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -70,19 +71,16 @@ public class TweetServiceImpl implements TweetService {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
             //检查长度
-            if (tweet.getContent().length() > 800) {
+            if (tweet.getContent().trim().length() > 2000) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CONTENT_TOO_LONG.message, tweet);
             }
             //检查内容
             if (!isValidContent(tweet.getContent())) {
                 message.append(ServiceMessage.CONTENT_ILLEGAL.message);
             }
-
             //过滤非法字符
-            tweet.setContent(toLegalText(tweet.getContent()));
+            tweet.setContent(toLegalTextIgnoreTag(tweet.getContent()));
             //插入数据库
-            //先把状态值设置为1，插入后查出状态为1的，返回给前端，并且对News表插入动态记录之后，再更新状态为0
-            tweet.setStatus(1);
             if (tweetDao.insert(tweet) != 1) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, tweet);
             }
@@ -105,7 +103,7 @@ public class TweetServiceImpl implements TweetService {
      */
     @Override
     public ServiceResult initNews(Friend friend) {
-        if (friend == null | friend.getFriendId() == null || friend.getUserId() == null) {
+        if (friend == null || friend.getFriendId() == null || friend.getUserId() == null) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
         }
         try {
@@ -354,6 +352,9 @@ public class TweetServiceImpl implements TweetService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.NO_MOMENT.message, null);
             }
             for (Tweet tweet : tweetList) {
+                String content = tweet.getContent();
+                String imgRegex = "\"<(img|IMG)(.*?)(/>|></img>|>)\"";
+                
                 //TODO 微博相册
 //                photoList.add(tweet.getPhoto());
             }
@@ -378,7 +379,7 @@ public class TweetServiceImpl implements TweetService {
     private void toTweetVOObject(List<TweetVO> momentVOList, Tweet tweet, User user) {
         TweetVO momentVO = new TweetVOBuilder().setContent(tweet.getContent()).setUserId(tweet.getOwnerId())
                 .setId(tweet.getId()).setRemark(tweet.getRemark()).setShare(tweet.getShare()).setUserName(user.getName())
-                .setView(tweet.getView()).setLove(tweet.getLove()).setUserPhoto(user.getPhoto())
+                .setView(tweet.getView()).setLove(tweet.getLove()).setUserPhoto(user.getPhoto()).setSort(tweet.getSort())
                 .setTime(tweet.getTime()).build();
         momentVOList.add(momentVO);
     }
@@ -393,7 +394,7 @@ public class TweetServiceImpl implements TweetService {
             return false;
         }
         //如果内容经过过滤后与原来不一样，说明含有非法内容
-        String legalText = toLegalText(content);
+        String legalText = toLegalTextIgnoreTag(content);
         if (content.equals(legalText)) {
             return true;
         }

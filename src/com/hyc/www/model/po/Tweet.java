@@ -32,6 +32,7 @@ public class Tweet extends BaseEntity {
     @JSONField(name = "owner_id")
     private BigInteger ownerId;
     private String content;
+    private String sort;
     private Timestamp time;
     private Long love;
     private Long remark;
@@ -47,7 +48,13 @@ public class Tweet extends BaseEntity {
         this.time = time;
     }
 
+    public String getSort() {
+        return sort;
+    }
 
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
 
     public BigInteger getOwnerId() {
         return ownerId;

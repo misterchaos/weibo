@@ -69,7 +69,7 @@ public class TweetProvider extends BaseProvider {
      */
     @Action(method = RequestMethod.DELETE_DO)
     public void deleteTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String momentId = req.getParameter("moment_id");
+        String momentId = req.getParameter("tweet_id");
         ServiceResult result;
         result = tweetService.removeTweet(new BigInteger(momentId));
         returnJsonObject(resp, result);
@@ -155,7 +155,7 @@ public class TweetProvider extends BaseProvider {
     @Action(method = RequestMethod.LOVE_DO)
     public void love(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
-        String momentId = req.getParameter("moment_id");
+        String momentId = req.getParameter("tweet_id");
         ServiceResult result;
         result = tweetService.love(new BigInteger(userId), new BigInteger(momentId));
         returnJsonObject(resp, result);

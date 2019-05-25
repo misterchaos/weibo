@@ -52,7 +52,7 @@ public class RemarkProvider extends BaseProvider {
      * @date 2019/5/14
      */
     @Action(method = RequestMethod.ADD_DO)
-    public void postRemark(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void postRemark(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Remark remark = (Remark) jsonToJavaObject(req.getInputStream(), Remark.class);
         ServiceResult result;
         result = remarkService.addRemark(remark);
@@ -68,8 +68,8 @@ public class RemarkProvider extends BaseProvider {
      * @date 2019/5/14
      */
     @Action(method = RequestMethod.LIST_DO)
-    public void listRemark(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String momentId = req.getParameter("moment_id");
+    public void listRemark(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String momentId = req.getParameter("tweet_id");
         String page = req.getParameter("page");
         ServiceResult result;
         result = remarkService.listRemark(new BigInteger(momentId), Integer.parseInt(page));
