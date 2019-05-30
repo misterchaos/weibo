@@ -5,20 +5,20 @@
 
 ------
 # 开发者信息：
->开发者：黄钰朝
->联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a>
->项目启动时间：2019-05-20
->版本号：1.0
->发布时间：2019-05-30
->开源许可：Apache License 2.0
->开发环境：
-Idea IntelliJ IDEA 2019.1.1 (Ultimate Edition)
-Build #IU-191.6707.61, built on April 16, 2019
-Licensed to wu anjun
-Subscription is active until January 8, 2020
-JRE: 1.8.0_202-release-1483-b44 amd64
-JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
-Windows 10 10.0
+> 开发者：黄钰朝
+> 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a>
+> 项目启动时间：2019-05-20
+> 版本号：1.0
+> 发布时间：2019-05-30
+> 开源许可：Apache License 2.0
+> 开发环境：
+###### Idea IntelliJ IDEA 2019.1.1 (Ultimate Edition)
+###### Build #IU-191.6707.61, built on April 16, 2019
+###### Licensed to wu anjun
+###### Subscription is active until January 8, 2020
+###### JRE: 1.8.0_202-release-1483-b44 amd64
+###### JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
+###### Windows 10 10.0
 
 ------
 
