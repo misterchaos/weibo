@@ -16,7 +16,7 @@
 
 package com.hyc.www.provider;
 
-import com.hyc.www.controller.constant.RequestMethod;
+import com.hyc.www.provider.constant.RequestMethod;
 import com.hyc.www.factory.ServiceProxyFactory;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Chat;

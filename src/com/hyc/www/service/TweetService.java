@@ -17,8 +17,8 @@
 package com.hyc.www.service;
 
 import com.hyc.www.model.dto.ServiceResult;
-import com.hyc.www.model.po.Friend;
 import com.hyc.www.model.po.Tweet;
+import com.hyc.www.service.annotation.Freeze;
 
 import java.math.BigInteger;
 
@@ -38,20 +38,9 @@ public interface TweetService {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    ServiceResult insertTweet(Tweet tweet);
+    @Freeze
+    ServiceResult insertTweet(BigInteger userId,Tweet tweet);
 
-
-    /**
-     * 给好友双方初始化微博，互相添加动态
-     *
-     * @param friend 好友
-     * @return
-     * @name initNews
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/18
-     */
-    ServiceResult initNews(Friend friend);
 
     /**
      * 删除一条微博
@@ -124,5 +113,6 @@ public interface TweetService {
      * @date 2019/5/10
      */
     ServiceResult listPhoto(BigInteger userId, int page);
+
 
 }

@@ -29,285 +29,226 @@
 <html>
 <head>
     <meta charset="utf-8">
-
     <title>weibo</title>
     <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/static/img/icon.ico"/>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <%--    <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>--%>
+    <link rel="stylesheet" href="http:${pageContext.request.contextPath}/static/css/index.css">
     <!--BEGIN——发送请求脚本-->
-    <script>
-        //post方法
-        function postRequest(url, request, callback) {
-            ajax({
-                url: urlEncode(url, request),
-                type: 'POST',
-                data: null,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    var result = eval("(" + data + ")");
-                    if (result.message != null && result.message !== '') {
-                        alert("系统提示：" + result.message);
-                    }
-                    callback(result);
-                },
-                error: function (xhr, error, exception) {
-                    alert("请求发送失败，请刷新浏览器重试或检查网络");
-                    alert(exception.toString());
-                }
-            });
-        }
-
-        //ajax方法
-        function ajaxJsonRequest(url, data, callback) {
-            ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    var result = eval("(" + data + ")");
-                    if (result.message != null && result.message !== '') {
-                        alert("系统提示：" + result.message);
-                    }
-                    callback(result);
-                },
-                error: function (xhr, error, exception) {
-                    alert("请求发送失败，请刷新浏览器重试或检查网络");
-                    alert(exception.toString());
-                }
-            });
-
-        }
-
-        function ajax(options) {
-            options = options || {};
-            options.type = (options.type || "GET").toUpperCase();
-            options.async = options.async == null ? true : options.async;
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    var status = xhr.status;
-                    if (status >= 200 && status < 300) {
-                        options.success && options.success(xhr.responseText, xhr.responseXML);
-                    } else {
-                        options.error && options.error(xhr.responseText, xhr.responseXML);
-                    }
-                }
-            };
-            console.log("是否异步" + options.async);
-            xhr.open(options.type, options.url, options.async);
-            if (options.dataType != null) {
-                xhr.setRequestHeader('Content-Type', options.contentType);
-            }
-            xhr.send(options.data);
-        }
-
-        function urlEncode(url, request) {
-            if (request == null) return '';
-            var paramStr = url + '?';
-            for (var i in request) {
-                if (request[i] == null) {
-                    continue;
-                }
-                paramStr += '&' + i + '=' + request[i];
-            }
-            return paramStr;
-        }
-    </script>
+    <script language="javascript" type="text/javascript"
+            src="${pageContext.request.contextPath}/static/js/ajax.js"></script>
     <!--END——发送请求脚本-->
 </head>
-<body>
+<body style="margin: 0px;">
 <div class="page-body" style="background-color: #eee;">
-    <img id="background" src="${pageContext.request.contextPath}/upload/photo/${sessionScope.login.chatBackground}"
+    <img id="background" src="${pageContext.request.contextPath}/upload/photo/${login.chatBackground}"
          style="position: absolute;height: 100%;width: 100%">
 
 
     <!--BEGIN——菜单列表-->
     <div class="menu">
-        <div class="menu-head">
-            <div class="menu-head-photo">
-                <img src="${pageContext.request.contextPath}/upload/photo/${sessionScope.login.photo}"
-                     class="menu-head-img"
-                     onclick="showWindowOnRight('user-info-box')">
-            </div>
-            <div class="menu-head-info">
-                <h3 class="menu-head-nickname">${sessionScope.login.name}</h3>
-            </div>
-        </div>
-        <div class="menu-search">
-            <i class="menu-search-icon"></i>
-            <input id="keyword" type="text" placeholder="搜索用户" class="menu-search-bar" oninput="enterClick('search')">
-            <div id="search" onclick="searchUser()" class="search-button">搜索</div>
-        </div>
-        <div class="menu-option">
-            <div class="menu-option-item">
-                <div id="tweet" onclick="showWindowOnLeft('tweet-list')" class="menu-option-button">微博</div>
-            </div>
-            <div class="menu-option-item">
-                <div id="chat" onclick="showWindowOnLeft('chat-list')" class="menu-option-button">消息</div>
-            </div>
-            <div class="menu-option-item">
-                <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">关注</div>
-            </div>
-            <div class="menu-option-item">
-                <div id="setting" onclick="showWindowOnLeft('setting-list')" class="menu-option-button">设置</div>
-            </div>
+        <!--BEGIN——用户主页窗口-->
+        <c:if test="${param.method=='home.do'}">
+            <img id="user-preview" style="height: 100px;width: 100px;display: block;"
+                 src="${pageContext.request.contextPath}/upload/photo/${requestScope.login.photo}"
+                 alt="用户头像">
+            <br>
+            <h2 style="color:whitesmoke">昵称：${requestScope.login.name}</h2>
+            <h2 style="color:whitesmoke">个性签名：${requestScope.login.signature}</h2>
+            <h2 style="color:whitesmoke">微博账号：${requestScope.login.weiboId}</h2>
+            <h2 style="color:whitesmoke">性别：${requestScope.login.gender}</h2>
+            <h2 style="color:whitesmoke">地区：${requestScope.login.location}</h2>
+            <h2 style="color:whitesmoke" onclick="showFollow('${requestScope.login.id}')">我的关注</h2>
+            <h2 style="color:whitesmoke" onclick="showFans('${requestScope.login.id}')">我的粉丝</h2>
 
-        </div>
-        <!--BEGIN——功能列表-->
-        <div id="menu-body" class="menu-body" data-window="tweet-list" onload="document.getElementById('chat').click()">
-            <div id="chat-list" style="display: none"></div>
-            <div id="friend-list" style="display: none">
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="document.getElementById('search').click()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">添加好友</h3>
-                                <p class="my-message">搜索并添加系统中的用户为好友</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="createChat()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">创建群聊</h3>
-                                <p class="my-message">创建一个群聊，邀请好友加入</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="joinChat()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">加入群聊</h3>
-                                <p class="my-message">通过群号加入一个群聊</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
+        </c:if>
+        <!--END——用户主页窗口-->
+        <!--BEGIN——登陆窗口-->
+        <c:if test="${param.method!='home.do'}">
+            <div class="menu-head">
+                <div class="menu-head-photo">
+                    <img src="${pageContext.request.contextPath}/upload/photo/${login.photo}"
+                         class="menu-head-img"
+                         onclick="showHome('${sessionScope.login.id}')">
+                </div>
+                <div class="menu-head-info">
+                    <h3 class="menu-head-nickname">${login.name}</h3>
+                </div>
             </div>
-            <div id="article-list" style="display: none"></div>
-            <div id="tweet-list" style="display: block">
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="showWindowOnRight('post-tweet-box')">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">发微博</h3>
-                                <p class="my-message">发布一条自己的微博分享自己的动态</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="loadSelectWeibo()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">查看微博</h3>
-                                <p class="my-message">按照分类查看微博</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="loadMyTweet(document.getElementById('tweet-box').dataset.page)">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">我的微博</h3>
-                                <p class="my-message">查看自己发布的微博</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="loadPhoto(document.getElementById('photo-box').dataset.page)">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">微博相册</h3>
-                                <p class="my-message">查看自己微博中的照片</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
+            <div class="menu-search">
+                <i class="menu-search-icon"></i>
+                <input id="keyword" type="text" placeholder="搜索用户" class="menu-search-bar"
+                       oninput="enterClick('search')">
+                <div id="search" onclick="searchUser()" class="search-button">搜索</div>
             </div>
-            <div id="setting-list" style="display: none">
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="showWindowOnRight('user-info-box')">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">更新个人信息</h3>
-                                <p class="my-message">更新昵称/头像/个性签名/...</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="updatePassword()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">更新登陆密码</h3>
-                                <p class="my-message">更新账户的登陆密码</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="document.getElementById('background-upload-input').click()">
-                    <form id="background-upload" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="background-upload-input"
-                               accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
-                               oninput="updateBackground()"
-                               style="display: none">
-                    </form>
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">更换聊天背景</h3>
-                                <p class="my-message">上传一张自己的图片作为聊天窗口的背景图</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
-                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
-                        onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="logout()">
-                    <div class="user-list-block">
-                        <div class="user-box">
-                            <div class="user-info">
-                                <h3 class="my-name">退出登陆</h3>
-                                <p class="my-message">注销当前账号在此浏览器上的登陆</p>
-                            </div>
-                        </div>
-                    </div>
-                </button>
+            <div class="menu-option">
+                <div class="menu-option-item">
+                    <div id="tweet" onclick="showWindowOnLeft('tweet-list')" class="menu-option-button">微博</div>
+                </div>
+                <div class="menu-option-item">
+                    <div id="chat" onclick="showWindowOnLeft('chat-list')" class="menu-option-button">私信</div>
+                </div>
+                <div class="menu-option-item">
+                    <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">好友</div>
+                </div>
+                <div class="menu-option-item">
+                    <div id="setting" onclick="showWindowOnLeft('setting-list')" class="menu-option-button">设置</div>
+                </div>
 
             </div>
-        </div>
-        <!--END——功能列表-->
+            <!--BEGIN——功能列表-->
+            <div id="menu-body" class="menu-body" data-window="tweet-list"
+                 onload="document.getElementById('chat').click()">
+                <div id="chat-list" style="display: none"></div>
+                <div id="friend-list" style="display: none">
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="document.getElementById('search').click()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">添加好友</h3>
+                                    <p class="my-message">搜索并添加系统中的用户为好友</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="createChat()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">创建群聊</h3>
+                                    <p class="my-message">创建一个群聊，邀请好友加入</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="joinChat()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">加入群聊</h3>
+                                    <p class="my-message">通过群号加入一个群聊</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+                <div id="article-list" style="display: none"></div>
+                <div id="tweet-list" style="display: block">
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="showWindowOnRight('post-tweet-box')">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">发微博</h3>
+                                    <p class="my-message">发布一条自己的微博分享自己的动态</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="loadSelectWeibo()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">查看微博</h3>
+                                    <p class="my-message">按照分类查看微博</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="loadMyTweet(document.getElementById('tweet-box').dataset.page)">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">我的微博</h3>
+                                    <p class="my-message">查看自己发布的微博</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="loadPhoto(document.getElementById('photo-box').dataset.page)">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">微博相册</h3>
+                                    <p class="my-message">查看自己微博中的照片</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+                <div id="setting-list" style="display: none">
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="showWindowOnRight('user-info-box')">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">更新个人信息</h3>
+                                    <p class="my-message">更新昵称/头像/个性签名/...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="updatePassword()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">更新登陆密码</h3>
+                                    <p class="my-message">更新账户的登陆密码</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="document.getElementById('background-upload-input').click()">
+                        <form id="background-upload" method="post" enctype="multipart/form-data">
+                            <input type="file" name="file" id="background-upload-input"
+                                   accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                                   oninput="updateBackground()"
+                                   style="display: none">
+                        </form>
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">更换聊天背景</h3>
+                                    <p class="my-message">上传一张自己的图片作为聊天窗口的背景图</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                            onmouseout="this.style.backgroundColor='#2e3238';"
+                            onclick="logout()">
+                        <div class="user-list-block">
+                            <div class="user-box">
+                                <div class="user-info">
+                                    <h3 class="my-name">退出登陆</h3>
+                                    <p class="my-message">注销当前账号在此浏览器上的登陆</p>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
 
+                </div>
+            </div>
+            <!--END——功能列表-->
+
+        </c:if>
+        <!--END——登陆窗口-->
     </div>
     <!--END——菜单列表-->
 
@@ -317,23 +258,12 @@
         <!--BEGIN——聊天窗口-->
         <div id="0" class="chat-box" style="display:none;background: transparent;">
             <div id="${param.chat_id}accept-message" class="chat-output-box" style="padding-top: 20px;">
-                   
-
                 <div class="chat-output-content-left">       
                     <img src="${pageContext.request.contextPath}/upload/photo/系统.jpg" alt="头像"
                          class="chat-output-head-photo-left">     
                     <h4 class="chat-output-meta-left">系统账号</h4>
                     <div class="chat-output-bubble-left">
-                        <pre class="chat-output-bubble-pre-left">系统消息：这是一个在线聊天系统，左侧是功能列表，点击头像可以查看您的个人信息，您可以搜索并向系统中的用户发出好友申请，可以创建自己的聊天群组，可以发布自己的微博，在微博下方写评论，更多功能，等你探索！
-
-
-开发者信息
-开发者：黄钰朝
-联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a>
-项目启动时间：2019-05-01
-版本号：1.0
-发布时间：2019-05-15
-开源许可：<a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0  Copyright 黄钰朝</a></pre>
+                        <pre class="chat-output-bubble-pre-left"></pre>
                     </div>
                 </div>
             </div>
@@ -352,12 +282,12 @@
 
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box" onclick="enterClick('update-user')">
+            <div id="${login.id}info" class="info-detail-box" onclick="enterClick('update-user')">
                    
                 <div class="info-outline">
                     <div class="info-head-photo">
                         <img id="user-preview"
-                             src="${pageContext.request.contextPath}/upload/photo/${sessionScope.login.photo}"
+                             src="${pageContext.request.contextPath}/upload/photo/${login.photo}"
                              class="info-head-img"
                              onclick="document.getElementById('user-photo-input').click()" alt="用户头像">
                         <form id="user-photo" method="post" enctype="multipart/form-data">
@@ -368,33 +298,33 @@
                         </form>
                     </div>
                     <div class="info-head-info">
-                        <h3 class="info-head-nickname">${sessionScope.login.name}</h3>
+                        <h3 class="info-head-nickname">${login.name}</h3>
                     </div>
                 </div>
                 <div class="info-detail">
                     <div class="info-detail-block">
                         <div class="info-detail-item" contenteditable="false">昵称:</div>
-                        <div class="info-detail-value" id="name" contenteditable="true">${sessionScope.login.name}</div>
+                        <div class="info-detail-value" id="name" contenteditable="true">${login.name}</div>
                     </div>
                     <div class="info-detail-block">
                         <div class="info-detail-item">个性签名:</div>
                         <div class="info-detail-value" id="signature"
-                             contenteditable="true">${sessionScope.login.signature}</div>
+                             contenteditable="true">${login.signature}</div>
                     </div>
                     <div class="info-detail-block">
                         <div class="info-detail-item">微博账号:</div>
                         <div class="info-detail-value" id="weibo_id"
-                             contenteditable="true">${sessionScope.login.weiboId}</div>
+                             contenteditable="true">${login.weiboId}</div>
                     </div>
                     <div class="info-detail-block">
                         <div class="info-detail-item">性别:</div>
                         <div class="info-detail-value" id="gender"
-                             contenteditable="true">${sessionScope.login.gender}</div>
+                             contenteditable="true">${login.gender}</div>
                     </div>
                     <div class="info-detail-block">
                         <div class="info-detail-item">地区:</div>
                         <div class="info-detail-value" id="location"
-                             contenteditable="true">${sessionScope.login.location}</div>
+                             contenteditable="true">${login.location}</div>
                     </div>
                 </div>
             </div>
@@ -414,7 +344,7 @@
                     </button>
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box">
+            <div id="${login.id}info" class="info-detail-box">
                 <div class="info-outline">
                     <div class="info-head-photo">
                         <img id="tweet-preview" src="${pageContext.request.contextPath}/upload/photo/upload.jpg"
@@ -432,7 +362,7 @@
                 </div>
                 <div class="info-detail">
                     <label for="select-sort"></label>
-                    <select id="select-sort" style="    margin-left: 48px">
+                    <select class="button" id="select-sort" style="margin-left: 48px;float: left">
                         <option value="篮球" name="sort">篮球</option>
                         <option value="动漫" name="sort">动漫</option>
                         <option value="明星" name="sort">明星</option>
@@ -478,7 +408,7 @@
                     </select>
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box">
+            <div id="${login.id}info" class="info-detail-box">
                 <div id="news-box-content" class="info-detail">
                 </div>
             </div>
@@ -498,7 +428,7 @@
                     </button>
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box">
+            <div id="${login.id}info" class="info-detail-box">
                 <div id="tweet-box-content" class="info-detail">
                 </div>
             </div>
@@ -508,7 +438,7 @@
         <div id="photo-box" data-page="1" class="info-box" style="display: none">
             <div class="info-box-head">   
                 <div class="info-box-title">       
-                    <div class="info-box-title-box"><a class="info-box-title-text">微博</a></div>
+                    <div class="info-box-title-box"><a class="info-box-title-text">微博相册</a></div>
                     <button onclick="loadPhoto(++document.getElementById('photo-box').dataset.page)"
                             class="button" contenteditable="false">下页
                     </button>
@@ -518,8 +448,8 @@
                     </button>
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box">
-                <div id="photo-box-content" class="info-detail">
+            <div id="${login.id}info" class="info-detail-box">
+                <div id="photo-box-content" class="info-detail" style="margin-top: 50px;">
                 </div>
             </div>
         </div>
@@ -534,7 +464,7 @@
                     </button>
                 </div>
             </div>
-            <div id="${sessionScope.login.id}info" class="info-detail-box">
+            <div id="${login.id}info" class="info-detail-box">
                 <div id="news-detail-box-content" class="info-detail">
                 </div>
             </div>
@@ -584,7 +514,7 @@
 
         var url = "http://${host}/weibo/chat?method=add.do";
         var request = JSON.stringify({
-            owner_id: "${sessionScope.login.id}",
+            owner_id: "${login.id}",
             name: name,
             number: number
         });
@@ -629,12 +559,12 @@
             alert("群号不可为空");
             return;
         }
-        var apply = prompt("请输入加群申请(加群申请会作为你的第一条消息发送到群聊中)", "");
+        var apply = prompt("请输入加群申请(加群申请会作为你的第一条私信发送到群聊中)", "");
         if (confirm("是否确定发送加群申请？")) {
             var url = "http://${host}/weibo/chat";
             var request = {
                 method: "join.do",
-                user_id: ${sessionScope.login.id},
+                user_id: ${login.id},
                 number: number,
                 apply: apply
             };
@@ -644,7 +574,7 @@
                 }
             });
         } else {
-            return;
+
         }
     }
 
@@ -653,7 +583,7 @@
         var url = "http://${host}/weibo/chat";
         var request = {
             method: "get.do",
-            user_id: ${sessionScope.login.id},
+            user_id: ${login.id},
             number: number
         };
         postRequest(url, request, function (result) {
@@ -683,7 +613,7 @@
         var url = "http://${host}/weibo/user";
         var request = {
             method: "updatepassword.do",
-            user_id: ${sessionScope.login.id},
+            user_id: ${login.id},
             old_password: old_password,
             new_password: new_password
         };
@@ -697,7 +627,7 @@
             var url = 'http://${host}/weibo/user';
             var request = {
                 method: "logout.do",
-                user_id: ${sessionScope.login.id},
+                user_id: ${login.id},
             };
             alert("正在退出登陆，请稍后...");
             postRequest(url, request, function (result) {
@@ -706,7 +636,7 @@
                 }
             });
         } else {
-            return;
+
         }
     }
 
@@ -755,13 +685,52 @@
         })
     }
 
+    //显示我的关注
+    function showFollow(user_id) {
+        var url = "http://${host}/weibo/friend";
+        var request = {
+            method: "follow.do",
+            user_id: user_id
+        };
+        postRequest(url, request, function (result) {
+            var users = result.data;
+            if (users.length === 0) {
+                return;
+            }
+            loadFollow();
+            for (var i = 0; i < users.length; i++) {
+                addFollowHtml(users[i]);
+            }
+        })
+    }
+
+
+    //显示我的粉丝
+    function showFans(user_id) {
+        var url = "http://${host}/weibo/friend";
+        var request = {
+            method: "fans.do",
+            user_id: user_id
+        };
+        postRequest(url, request, function (result) {
+            var users = result.data;
+            if (users.length === 0) {
+                return;
+            }
+            loadFans();
+            for (var i = 0; i < users.length; i++) {
+                addFansHtml(users[i]);
+            }
+        })
+    }
+
     //清除聊天记录
     function deleteChatMessage(chat_id) {
         var url = "http://${host}/weibo/message";
         var request = {
             method: "clear.do",
             chat_id: chat_id,
-            user_id: "${sessionScope.login.id}"
+            user_id: "${login.id}"
         };
         postRequest(url, request, function (result) {
         })
@@ -774,7 +743,7 @@
         var url = "http://${host}/weibo/message";
         var request = {
             method: "read.do",
-            user_id: ${sessionScope.login.id},
+            user_id: ${login.id},
             chat_id: chat_id
         };
         postRequest(url, request, function (result) {
@@ -787,7 +756,7 @@
         var url = "http://${host}/weibo/chat";
         var request = {
             method: "list.do",
-            id: "${sessionScope.login.id}"
+            id: "${login.id}"
         };
         postRequest(url, request, function (result) {
             var chats = result.data;
@@ -805,7 +774,7 @@
         var url = "http://${host}/weibo/friend";
         var request = {
             method: "list.do",
-            user_id: "${sessionScope.login.id}"
+            user_id: "${login.id}"
         };
         postRequest(url, request, function (result) {
             document.getElementById("friend-list").innerHTML = ' <button class="user-list-block-href" onmouseover="this.style.backgroundColor=\'#3A3F45\'"\n' +
@@ -814,8 +783,8 @@
                 '                    <div class="user-list-block">\n' +
                 '                        <div class="user-box">\n' +
                 '                            <div class="user-info">\n' +
-                '                                <h3 class="my-name">添加好友</h3>\n' +
-                '                                <p class="my-message">搜索并添加系统中的用户为好友</p>\n' +
+                '                                <h3 class="my-name">查找用户</h3>\n' +
+                '                                <p class="my-message">通过昵称搜索系统中的用户</p>\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
                 '                    </div>\n' +
@@ -851,17 +820,17 @@
         });
     }
 
-    //加载未读消息
+    //加载未读私信
     function loadUnReadMessage(page) {
         var url = "http://${host}/weibo/message";
         var request = {
             method: "unread.do",
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             page: page
         };
         postRequest(url, request, function (result) {
             var messages = result.data;
-            console.log("查询到未读消息 ： " + messages.length)
+            console.log("查询到未读私信 ： " + messages.length);
 
             for (var i = messages.length - 1; i >= 0; i--) {
                 showMessage(messages[i]);
@@ -869,30 +838,30 @@
         });
     }
 
-    //加载一个聊天的未读消息
+    //加载一个聊天的未读私信
     function loadUnReadMessageInAChat(chat_id, page) {
         var url = "http://${host}/weibo/message";
         var request = {
             method: "unread.do",
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             chat_id: chat_id,
             page: page
         };
         postRequest(url, request, function (result) {
             var messages = result.data;
-            console.log("查询到未读消息 ： " + messages.length)
+            console.log("查询到未读私信 ： " + messages.length);
             for (var i = messages.length - 1; i >= 0; i--) {
                 showMessage(messages[i]);
             }
         });
     }
 
-    //加载一个聊天中的所有消息
+    //加载一个聊天中的所有私信
     function loadAllMessage(page, chat_id) {
         var url = "http://${host}/weibo/message";
         var request = {
             method: "list.do",
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             chat_id: chat_id,
             page: page,
         };
@@ -923,7 +892,7 @@
         var url = "http://${host}/weibo/tweet";
         var request = {
             method: "list.do",
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             page: page,
             sort: sort
         };
@@ -944,7 +913,7 @@
         var url = "http://${host}/weibo/tweet";
         var request = {
             method: "tweet.do",
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             page: page
         };
         alert("正在加载您的微博，请稍后...");
@@ -952,7 +921,7 @@
             var tweets = result.data;
             //加载之前先将之前的清空
             document.getElementById('tweet-box-content').innerHTML = '';
-            for (var i = 0; i < tweets.length - 1; i++) {
+            for (var i = 0; i < tweets.length; i++) {
                 addMomentBlockHtml(tweets[i]);
             }
         });
@@ -964,7 +933,7 @@
         var url = 'http://${host}/weibo/tweet';
         var request = {
             method: "photo.do",
-            user_id: ${sessionScope.login.id},
+            user_id: ${login.id},
             page: page
         };
         alert("正在加载微博相册，请稍后...");
@@ -990,7 +959,7 @@
             postRequest(url, request, function (result) {
             });
         } else {
-            return;
+
         }
     }
 
@@ -1006,25 +975,40 @@
                 addMomentDetailHtml(tweet_id);
             });
         } else {
-            return;
+
         }
     }
 
-    //删除好友
+    //取消关注
     function deleteFriend(friend_id) {
-        if (confirm("是否确定要删除这个好友？")) {
+        if (confirm("是否确定要取消关注？")) {
             var url = 'http://${host}/weibo/friend';
             var request = {
                 method: "delete.do",
-                user_id: ${sessionScope.login.id},
+                user_id: ${login.id},
                 friend_id: friend_id
             };
-            alert("正在删除好友，请稍后...");
+            alert("正在取消关注，请稍后...");
             postRequest(url, request, function (result) {
                 loadFriendList();
             });
         } else {
-            return;
+
+        }
+    }
+
+    //冻结用户
+    function freezeUser(user_id) {
+        if (confirm("是否确定要冻结该用户？")) {
+            var url = 'http://${host}/weibo/user';
+            var request = {
+                method: "freeze.do",
+                user_id: user_id
+            };
+            postRequest(url, request, function (result) {
+            });
+        } else {
+
         }
     }
 
@@ -1032,27 +1016,22 @@
     function addFriend(friend_id) {
 
         var url = "http://${host}/weibo/friend?method=add.do";
-        var description = prompt("请输入好友申请", "我是${sessionScope.login.name},快加我为好友吧！");
-        var alias = prompt("请输入好友备注", "");
-        if (description == null) {
+        var description = "我是${login.name},我关注了你！";
+        var alias = "";
+        if (description === null) {
             return;
         }
         var request = JSON.stringify({
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             friend_id: friend_id,
             description: description,
             alias: alias
         });
-        if (alias == null) {
+        if (alias === null) {
             return;
         }
-        if (confirm("是否确定要发送好友申请？")) {
-            alert("正在发送好友申请，请稍后...");
-            ajaxJsonRequest(url, request, function (result) {
-            })
-        } else {
-            return;
-        }
+        ajaxJsonRequest(url, request, function (result) {
+        })
     }
 
     //同意加好友
@@ -1065,7 +1044,7 @@
                 return;
             }
             var request = JSON.stringify({
-                user_id: "${sessionScope.login.id}",
+                user_id: "${login.id}",
                 friend_id: friend_id,
                 alias: alias
             });
@@ -1073,7 +1052,7 @@
             ajaxJsonRequest(url, request, function (result) {
             })
         } else {
-            return;
+
         }
     }
 
@@ -1082,14 +1061,14 @@
         if (confirm("是否确定要退出该群聊？")) {
             var url = "http://${host}/weibo/chat?method=quit.do";
             var request = JSON.stringify({
-                user_id: "${sessionScope.login.id}",
+                user_id: "${login.id}",
                 chat_id: chat_id,
             });
             alert("正在退出群聊，请稍后...");
             ajaxJsonRequest(url, request, function (result) {
             })
         } else {
-            return;
+
         }
     }
 
@@ -1097,7 +1076,7 @@
     function updateUserInfo() {
         if (confirm("是否确定更新个人信息？")) {
             var jsonStr = JSON.stringify({
-                id: "${sessionScope.login.id}",
+                id: "${login.id}",
                 name: document.getElementById("name").innerText,
                 signature: document.getElementById("signature").innerText,
                 weibo_id: document.getElementById("weibo_id").innerText,
@@ -1113,41 +1092,43 @@
                 }
             });
             //更新头像
-            url = "http://${host}/weibo/upload?method=uploadphoto.do&id=${sessionScope.login.id}&table=user";
+            url = "http://${host}/weibo/upload?method=uploadphoto.do&id=${login.id}&table=user";
             uploadPhoto(url, "user-photo");
         } else {
-            return;
+
         }
     }
 
     //更新聊天背景
     function updateBackground() {
         imgPreview(document.getElementById('background-upload-input'), 'background');
-        var url = "http://${host}/weibo/upload?method=background.do&id=${sessionScope.login.id}";
+        var url = "http://${host}/weibo/upload?method=background.do&id=${login.id}";
         alert("正在更新聊天背景，请稍后...");
         uploadPhoto(url, 'background-upload');
     }
 
     //发布微博
     function postMoment() {
-        var content = document.getElementById("tweet-content").value + "</br>";
+        var content = document.getElementById("tweet-content").value;
         if (!('' === content)) {
             //上传图片
             var url = "http://${host}/weibo/upload?method=uploadfile.do";
             var img = document.getElementById('tweet-photo-input').files;
+            if (img.length > 0) {
+                content += "</br>";
+            }
             for (var i = 0; i < img.length; i++) {
                 var formData = new FormData();
                 formData.append('file', img[i]);
                 uploadFile(url, formData, function (filename) {
-                    var html = '<img src="${pageContext.request.contextPath}/upload/file/' + filename + '"\n' +
-                        'style="height: 100%;width: 100%;max-height:200px;max-width:200px;">\n';
+                    var html = '<img src="${pageContext.request.contextPath}/upload/file/' + filename + '"' + 'style="height: 100%;width: 100%;max-height:200px;max-width:200px;">\n';
                     content += html;
                 });
             }
             var select = document.getElementById("select-sort");
             var index = select.selectedIndex;
             var jsonStr = JSON.stringify({
-                owner_id: "${sessionScope.login.id}",
+                owner_id: "${login.id}",
                 content: content,
                 sort: select[index].value
             });
@@ -1158,9 +1139,24 @@
             document.getElementById("tweet-content").value = '';
         } else {
             alert("发送内容不能为空");
-            return;
+
         }
     }
+
+
+    //转发微博
+    function shareTweet(tweet_id) {
+        var content = prompt("请输入转发评论", "转发微博");
+        var jsonStr = JSON.stringify({
+            owner_id: "${login.id}",
+            content: content,
+            origin_id: tweet_id,
+        });
+        url = "http://${host}/weibo/tweet?method=add.do";
+        ajaxJsonRequest(url, jsonStr, function (result) {
+        });
+    }
+
 
     //点赞微博
     function loveMoment(tweet_id, moment_love) {
@@ -1168,7 +1164,7 @@
         var request = {
             method: "love.do",
             tweet_id: tweet_id,
-            user_id:${sessionScope.login.id},
+            user_id:${login.id},
         };
         postRequest(url, request, function (result) {
             var islove = result.data;
@@ -1193,7 +1189,7 @@
         var time = new Date().getTime();
         var url = "http://${host}/weibo/remark?method=add.do";
         var request = JSON.stringify({
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             tweet_id: tweet_id,
             time: time,
             content: content
@@ -1209,11 +1205,11 @@
                     addMomentDetailHtml(tweet_id);
                 })
             } else {
-                return;
+
             }
         } else {
             alert("评论内容不能为空");
-            return;
+
         }
     }
 
@@ -1227,7 +1223,7 @@
         var time = new Date().getTime();
         var url = "http://${host}/weibo/remark?method=add.do";
         var request = JSON.stringify({
-            user_id: "${sessionScope.login.id}",
+            user_id: "${login.id}",
             tweet_id: tweet_id,
             time: time,
             content: content
@@ -1243,10 +1239,59 @@
 
                 })
             } else {
-                return;
+
             }
         } else {
             alert("回复内容不能为空");
+
+        }
+    }
+
+    //发送图片
+    function send_img(fileDom, file_id, preview, chat_id) {
+        //判断是否支持FileReader
+        if (window.FileReader) {
+            var reader = new FileReader();
+        } else {
+            alert("您的设备不支持文件预览功能，如需该功能请升级您的设备！");
+        }
+        //获取文件
+        var file = fileDom.files[0];
+        //文件大小
+        var size = (file.size / 1024) / 1024;
+        console.log("size" + size);
+        var imageType = /^image\//;
+        //是否是图片
+        if (!imageType.test(file.type)) {
+            alert("该文件不是图片或者已经损坏，请重新选择！");
+            return;
+        }
+        if (size > 5) {
+            alert("图片大小不能大于5m！");
+            file.value = "";
+            return;
+        } else if (size <= 0) {
+            alert("文件大小不能为0M！");
+            file.value = "";
+            return;
+        }
+        //读取完成
+        reader.onload = function () {
+        };
+        reader.readAsDataURL(file);
+        if (confirm("是否确定要立即发送图片：" + file.name)) {
+            //upload-file
+            var formData = new FormData();
+            var url = "http://${host}/weibo/upload?method=uploadfile.do";
+            formData.append('file', document.getElementById(file_id).files[0]);
+            uploadFile(url, formData, function (filename) {
+                var html = '<img src="${pageContext.request.contextPath}/upload/file/' + filename + '"\n' +
+                    '         style="height: 100%;width: 100%;max-height:200px;max-width:200px;">\n';
+                document.getElementById(preview).value += html;
+                sendMessage(chat_id, "img");
+
+            })
+        } else {
             return;
         }
     }
@@ -1305,7 +1350,7 @@
             '                    </div>\n' +
             '                    <div class="user-info">\n' +
             '                        <h3 class="my-name">' + chat.name + '</h3>\n' +
-            '                        <p class="my-message" id="' + chat.id + 'new-message">没有新消息</p>\n' +
+            '                        <p class="my-message" id="' + chat.id + 'new-message">没有新私信</p>\n' +
             '                    </div>\n' +
             '                </div>\n' +
             '            </div></button>';
@@ -1352,10 +1397,10 @@
             '                </div>\n' +
             '            </div>  ' +
             '<div class="menu-option-item">\n' +
-            '                <div id="chat" onclick="showChatBox(\'' + friend.chat_id + '\')" class="menu-option-button">发消息</div>\n' +
+            '                <div id="chat" onclick="showChatBox(\'' + friend.chat_id + '\')" class="menu-option-button">发私信</div>\n' +
             '            </div>          ' +
             '<div class="menu-option-item">\n' +
-            '                <div id="chat"  onclick="deleteFriend(\'' + friend.friend_id + '\')" class="menu-option-button" style="float: right">删除好友</div>\n' +
+            '                <div id="chat"  onclick="deleteFriend(\'' + friend.friend_id + '\')" class="menu-option-button" style="float: right">取消关注</div>\n' +
             '            </div></button>';
         document.getElementById("friend-list").innerHTML += chat_html;
     }
@@ -1403,6 +1448,36 @@
         document.getElementById("search-result-box").innerHTML =
             '                <div class="chat-box-title">       \n' +
             '                        <a class="chat-box-title-text">聊天成员列表</a>       \n' +
+            '                </div>\n' +
+            '            <div class="info-detail-box">                  \n' +
+            '                <div id="content" class="info-detail">           \n' +
+            '                    <div></div>\n' +
+            '                </div>\n' +
+            '            </div>\n';
+
+        showWindowOnRight("search-result-box");
+    }
+
+    //加载关注信息
+    function loadFollow() {
+        document.getElementById("search-result-box").innerHTML =
+            '                <div class="chat-box-title">       \n' +
+            '                        <a class="chat-box-title-text">我的关注</a>       \n' +
+            '                </div>\n' +
+            '            <div class="info-detail-box">                  \n' +
+            '                <div id="content" class="info-detail">           \n' +
+            '                    <div></div>\n' +
+            '                </div>\n' +
+            '            </div>\n';
+
+        showWindowOnRight("search-result-box");
+    }
+
+    //加载粉丝
+    function loadFans() {
+        document.getElementById("search-result-box").innerHTML =
+            '                <div class="chat-box-title">       \n' +
+            '                        <a class="chat-box-title-text">我的粉丝</a>       \n' +
             '                </div>\n' +
             '            <div class="info-detail-box">                  \n' +
             '                <div id="content" class="info-detail">           \n' +
@@ -1491,7 +1566,7 @@
             '                    </button>' +
             '         <button \n' +
             '                            onclick="loadAllMessage(\'1\',\'' + chat.id + '\')"\n' +
-            '                            class="button" contenteditable="false">加载已读消息\n' +
+            '                            class="button" contenteditable="false">加载已读私信\n' +
             '                    </button>' +
             '                    <p class="chat-box-title-text">\n' +
             '                        ' + chat.name + '\n' +
@@ -1523,7 +1598,7 @@
         document.getElementById("right-page").innerHTML += html;
     }
 
-    //发送消息
+    //发送私信
     function sendMessage(chat_id, type) {
         if (websocket === null) {
             alert("正在初始化websocket连接，第一次连接需要加载数据，请稍后...");
@@ -1535,7 +1610,7 @@
         }
         var content = document.getElementById(chat_id + 'send-message').value;
         if (!('' === content)) {
-            var user_id = "${sessionScope.login.id}";
+            var user_id = "${login.id}";
             var time = new Date().getTime();
             websocket.send(JSON.stringify({
                 sender_id: user_id,
@@ -1544,11 +1619,11 @@
                 type: type,
                 time: time
             }));
-            //发送完之后将消息清空
+            //发送完之后将私信清空
             document.getElementById(chat_id + 'send-message').value = '';
         } else {
             alert("发送内容不能为空");
-            return;
+
         }
     }
 
@@ -1600,70 +1675,10 @@
                 }
             });
         } else {
-            return;
+
         }
     }
 
-    //发送图片
-    function send_img(fileDom, file_id, preview, chat_id) {
-        //判断是否支持FileReader
-        if (window.FileReader) {
-            var reader = new FileReader();
-        } else {
-            alert("您的设备不支持文件预览功能，如需该功能请升级您的设备！");
-        }
-        //获取文件
-        var file = fileDom.files[0];
-        //文件大小
-        var size = (file.size / 1024) / 1024;
-        console.log("size" + size);
-        var imageType = /^image\//;
-        //是否是图片
-        if (!imageType.test(file.type)) {
-            alert("该文件不是图片或者已经损坏，请重新选择！");
-            return;
-        }
-        if (size > 5) {
-            alert("图片大小不能大于5m！");
-            file.value = "";
-            return;
-        } else if (size <= 0) {
-            alert("文件大小不能为0M！");
-            file.value = "";
-            return;
-        }
-        //读取完成
-        reader.onload = function () {
-        };
-        reader.readAsDataURL(file);
-        if (confirm("是否确定要立即发送图片：" + file.name)) {
-            //upload-file
-            var formData = new FormData();
-            var url = "http://${host}/weibo/upload?method=uploadfile.do";
-            formData.append('file', document.getElementById(file_id).files[0]);
-            ajax({
-                url: url,
-                type: 'POST',
-                data: formData,
-                success: function (result) {
-                    if (result.message != null && result.message !== '') {
-                        alert("系统提示：" + result.message);
-                    }
-                    if ("SUCCESS" === result.status) {
-                        var html = '<img src="${pageContext.request.contextPath}/upload/file/' + result.data + '"\n' +
-                            '         style="height: 100%;width: 100%;max-height:200px;max-width:200px;">\n';
-                        document.getElementById(preview).value += html;
-                        sendMessage(chat_id, "img");
-                    }
-                },
-                error: function (xhr, error, exception) {
-                    alert(exception.toString());
-                }
-            });
-        } else {
-            return;
-        }
-    }
 
     //移除一个成员
     function removeMember(member_id, chat_id) {
@@ -1680,68 +1695,88 @@
                 }
             });
         } else {
-            return;
+
         }
     }
 
     //插入一个搜索用户的结果
     function addSearchUserResultHtml(user) {
-        <%--var html = '                   <div class="info-detail-block">               \n' +--%>
-        <%--    // '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +--%>
-        <%--    '                            <div class="user-photo" style="margin: 20px">\n' +--%>
-        <%--    '                                <img src="${pageContext.request.contextPath}/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo">\n' +--%>
-        <%--    '                            </div>\n' +--%>
-        <%--    '                            <div class="user-info">\n' +--%>
-        <%--    '                                <h3 class="my-name" style="color: #333；width: fit-content;">' + user.name + '</h3>\n' +--%>
-        <%--    '                            <button onclick="addFriend(\'' + user.id + '\')" style="float: right"\n' +--%>
-        <%--    '                                    contenteditable="false">加好友\n' +--%>
-        <%--    '                            </button>\n' +--%>
-        <%--    '                            </div>\n' +--%>
-        <%--    '                                <p class="my-message" style="margin-top:-25px;">' + user.signature + '</p>\n' +--%>
-        <%--    // '                        </div>\n' +--%>
-        <%--    '                    </div>';--%>
-        var html = '                   <div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
-            // '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
-            '                            <div class="user-photo" style="margin: 20px">\n' +
-            '                                <img src="${pageContext.request.contextPath}/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo">\n' +
-            '                            </div>\n' +
-            '                            <div class="user-info">\n' +
-            '                                <h3 class="my-name" style="color: #333;width: fit-content;">' + user.name + '</h3>\n' +
-            '                            <button onclick="addFriend(\'' + user.id + '\')" class="button"\n' +
-            '                                    contenteditable="false">加好友\n' +
-            '                            </button>\n' +
-            '                            </div>\n' +
+        var html = '<div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
+            ' <div class="user-photo" style="margin: 20px">\n' +
+            ' <img src="${pageContext.request.contextPath}/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo" onclick="showHome(' + user.id + ')">\n' +
+            '    </div>\n' +
+            '   <div class="user-info">\n' +
+            '   <h3 class="my-name" style="color: #333;width: fit-content;">' + user.name + '</h3>\n' +
+            '        <button onclick="addFriend(\'' + user.id + '\')" class="button"\n' +
+            '   contenteditable="false">加关注\n' +
+            '        </button>\n' +
+            '         </div>\n' +
             '                                <p class="my-message" style="margin-top:-25px;width: 70%;">' + user.signature + '</p>\n' +
-            // '                        </div>\n' +
+            '                    </div>';
+        document.getElementById("content").innerHTML += html;
+    }
+
+
+    //插入一个关注用户
+    function addFollowHtml(friend) {
+        var html = '<div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
+            ' <div class="user-photo" style="margin: 20px">\n' +
+            ' <img src="${pageContext.request.contextPath}/upload/photo/' + friend.photo + '" alt="用户头像" class="my-photo" onclick="showHome(' + friend.id + ')">\n' +
+            '    </div>\n' +
+            '   <div class="user-info">\n' +
+            '   <h3 class="my-name" style="color: #333;width: fit-content;">' + friend.alias + '</h3>\n' +
+            '        <button onclick="deleteFriend(\'' + friend.friend_id + '\')" class="button"\n' +
+            '   contenteditable="false">取消关注\n' +
+            '        </button>\n' +
+            '         </div>\n' +
+            '                                <p class="my-message" style="margin-top:-25px;width: 70%;"></p>\n' +
+            '                    </div>';
+        document.getElementById("content").innerHTML += html;
+    }
+
+    //插入一个粉丝用户
+    function addFansHtml(user) {
+        var html = '<div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
+            ' <div class="user-photo" style="margin: 20px">\n' +
+            ' <img src="${pageContext.request.contextPath}/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo" onclick="showHome(' + user.id + ')">\n' +
+            '    </div>\n' +
+            '   <div class="user-info">\n' +
+            '   <h3 class="my-name" style="color: #333;width: fit-content;">' + user.name + '</h3>\n' +
+            '        <button onclick="addFriend(\'' + user.id + '\')" class="button"\n' +
+            '   contenteditable="false">加关注\n' +
+            '        </button>\n' +
+            '         </div>\n' +
+            '                                <p class="my-message" style="margin-top:-25px;width: 70%;"></p>\n' +
             '                    </div>';
         document.getElementById("content").innerHTML += html;
     }
 
     //插入一个群成员的信息
     function addMemberHtml(member) {
-        var html = '                   <div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
-            // '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
-            '                            <div class="user-photo" style="margin: 20px">\n' +
-            '                                <img src="${pageContext.request.contextPath}/upload/photo/' + member.photo + '" alt="用户头像" class="my-photo">\n' +
-            '                            </div>\n' +
-            '                            <div class="user-info">\n' +
-            '                                <h3 class="my-name" style="color: #333;width: fit-content;">' + member.name + '</h3>\n' +
-            '                            <button onclick="removeMember(\'' + member.id + '\',\'' + member.chat_id + '\')" class="button"\n' +
-            '                                    contenteditable="false">移出该群\n' +
-            '                            </button>\n' +
-            '                            <button onclick="addFriend(\'' + member.user_id + '\')" class="button"\n' +
-            '                                    contenteditable="false">加好友\n' +
-            '                            </button>\n' +
-            '                            </div>\n' +
-            '                                <p class="my-message" style="margin-top:-25px;width: 60%;">' + member.signature + '</p>\n' +
-            // '                        </div>\n' +
-            '                    </div>';
+        var html = '  <div class="info-detail-block" style="  width: 95%;min-width:300px;">               \n' +
+            // '   <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
+            ' <div class="user-photo" style="margin: 20px">\n' +
+            ' <img src="${pageContext.request.contextPath}/upload/photo/' + member.photo + '" alt="用户头像" class="my-photo">\n' +
+            ' </div>\n' +
+            ' <div class="user-info">\n' +
+            ' <h3 class="my-name" style="color: #333;width: fit-content;">' + member.name + '</h3>\n' +
+            ' <button onclick="removeMember(\'' + member.id + '\',\'' + member.chat_id + '\')" class="button"\n' +
+            ' contenteditable="false">移出该群\n' +
+            ' </button>\n' +
+            ' <button onclick="addFriend(\'' + member.user_id + '\')" class="button"\n' +
+            ' contenteditable="false">加好友\n' +
+            ' </button>\n' +
+            ' </div>\n' +
+            ' <p class="my-message" style="margin-top:-25px;width: 60%;">' + member.signature + '</p>\n' +
+            // '</div>\n' +
+            ' </div>';
         document.getElementById("content").innerHTML += html;
     }
 
+
     //显示微博详情
     function addMomentDetailHtml(tweet_id) {
-        var html = '           <div id="' + tweet.id + '" class="info-detail-block" style="margin-left: 20px">\n' +
+        var html = '           <div id="' + tweet_id + '" class="info-detail-block" style="margin-left: 20px">\n' +
             document.getElementById(tweet_id).innerHTML +
             '                    </div>';
         document.getElementById("news-detail-box-content").innerHTML = html;
@@ -1765,6 +1800,13 @@
             }
         });
     }
+
+    //展示用户主页
+    function showHome(user_id) {
+        var url = "http://${host}/weibo/user?method=home.do&user_id=" + user_id;
+        window.location.href = url;
+    }
+
 
     //插入一条用户的微博评论
     function addRemarkBlockHtml(remark) {
@@ -1799,7 +1841,7 @@
             '                            </div>\n' +
             '                        </label>\n' +
             '                    </div>';
-        if (remark.user_id ===${sessionScope.login.id}) {
+        if (remark.user_id ===${login.id}) {
             document.getElementById("news-detail-box-content").innerHTML += html + ownerArea;
         } else {
             document.getElementById("news-detail-box-content").innerHTML += html + visitorArea;
@@ -1825,11 +1867,12 @@
             '                            <div class="info-detail-block" >               \n' +
             '                                <div class="user-box" style="border-bottom: 1px solid #ccc;width:100%;">\n' +
             '                                    <div class="user-photo">\n' +
-            '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + tweet.user_photo + '" alt=w"用户头像" class="my-photo">\n' +
+            '                                        <img onclick="showHome(' + tweet.owner_id + ')" src="${pageContext.request.contextPath}/upload/photo/' + tweet.user_photo + '" alt=w"用户头像" class="my-photo">\n' +
             '                                    </div>\n' +
-            '                                    <div onclick="addMomentDetailHtml(\'' + tweet.id + '\')" class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
-            '                                        <h3 class="my-name" style="color: #333">' + tweet.user_name + ' 发布于 ' + time + ' [分类：' + tweet.sort + ']</h3>\n' +
-            '                                        <div style="word-break: break-all;white-space: normal;    max-width: 70%">' + tweet.content + '</div>\n' +
+            '                                    <div  class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
+            '                                        <h3 class="my-name" style="color: #333">' + tweet.user_name + ' 发布于 ' + time + ' [分类：' + tweet.sort + ']' +
+            '</h3><h3 onclick="addFriend(' + tweet.owner_id + ')">[+关注]</h3><h3 onclick="freezeUser(' + tweet.owner_id + ')">[冻结用户]</h3>\n' +
+            '                                        <div onclick="addMomentDetailHtml(\'' + tweet.id + '\')" style="word-break: break-all;white-space: normal;    max-width: 70%">' + tweet.content + '</div>\n' +
             '                                    </div>\n' +
             '                                    <button id="' + tweet.id + 'love" data-love="' + tweet.love + '" ' +
             '                                       onclick="loveMoment(\'' + tweet.id + '\',' + tweet.love + ')" style="float: left;height: 30px;"  class="button" \n' +
@@ -1839,7 +1882,7 @@
             '                                       onclick="remarkMoment(\'' + tweet.id + '\',' + tweet.remark + ')" style="float: left;height: 30px;"  class="button" \n' +
             '                                            contenteditable="false">评论\(' + tweet.remark + '\)\n' +
             '                                    </button>\n' +
-            '                                    <button onclick="dev()" style="float: left;height: 30px;"  class="button" \n' +
+            '                                    <button onclick="shareTweet(\'' + tweet.id + '\')" style="float: left;height: 30px;"  class="button" \n' +
             '                                            contenteditable="false">转发\(' + tweet.share + '\)\n' +
             '                                    </button>\n' +
             '                                    <button onclick="" style="float: left;height: 30px;"  class="button" \n' +
@@ -1859,7 +1902,7 @@
             '                            </div>\n' +
             '                        </label>\n' +
             '                    </div>';
-        if (tweet.owner_id ===${sessionScope.login.id}) {
+        if (tweet.owner_id ===${login.id}) {
             return html + ownerArea;
         } else {
             return html + visitorArea;
@@ -1869,21 +1912,11 @@
 
     //插入微博照片
     function addPhotoHtml(photo) {
-        var html = '           <div class="info-detail-block" style="margin-left: 20px">\n' +
-            '                            <div class="info-detail-block">               \n' +
-            '                                <div class="user-box" style="">\n' +
-            '                                    <div class="user-info" style="    border-bottom: 1px solid #ccc;height: fit-content;margin-bottom: 11px;">\n' +
-            '                                        <img src="${pageContext.request.contextPath}/upload/photo/' + photo + '" style="position:relative;height: 100%;' +
-            'max-width:500px;max-height:300px;width: 100%">\n' +
-            '                                    </div>\n' +
-            '                                </div>\n' +
-            '                            </div>\n' +
-            '                    </div>';
-
+        var html = '<img src="' + photo + '" style="height: 100%;width: 100%;max-height:200px;max-width:200px;position: relative;">\n';
         document.getElementById("photo-box-content").innerHTML += html;
     }
 
-    //将消息显示在消息对应的聊天窗口上,并在聊天列表对应位置显示
+    //将私信显示在私信对应的聊天窗口上,并在聊天列表对应位置显示
     function addMessageToChat(message) {
         var right_bubble_html = '<div class="chat-output-content-right">\n' +
             '    <img src="${pageContext.request.contextPath}/upload/photo/' + message.sender_photo + '" alt="头像" class="chat-output-head-photo-right">\n' +
@@ -1896,7 +1929,7 @@
             '    <div class="chat-output-bubble-left">\n' +
             '        <div class="chat-output-bubble-inner">\n' +
             '            <pre class="chat-output-bubble-pre-left">' + message.content + '</pre></div></div></div>';
-        if (message.sender_id ===${sessionScope.login.id}) {
+        if (message.sender_id ===${login.id}) {
             document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + right_bubble_html;
         } else {
             document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + left_bubble_html;
@@ -1912,14 +1945,14 @@
         }
     }
 
-    //显示消息
+    //显示私信
     function showMessage(message) {
         if (message.type === "system") {
             alert(message.content);
             return;
         }
         if (message.type === "user" || message.type === "file" || message.type === "img") {
-            console.log("显示用户消息");
+            console.log("显示用户私信");
             addMessageToChat(message);
         }
         if (message.type === "friend") {
@@ -1938,7 +1971,7 @@
 
     function lastWeiboPage() {
         if (document.getElementById('news-box').dataset.page === "1") {
-            return;
+
         } else {
             document.getElementById('news-box').dataset.page--;
         }
@@ -1952,7 +1985,7 @@
 <!--BEGIN——websocket脚本-->
 <script type="text/javascript">
     var websocket = null;
-    var url = "ws://${host}/server/chat/${sessionScope.login.id}";
+    var url = "ws://${host}/server/chat/${login.id}";
 
     function connectWebsocket() {
 
@@ -1971,19 +2004,19 @@
 
         //连接成功建立的回调方法
         websocket.onopen = function () {
-        }
+        };
 
-        //接收到消息的回调方法
+        //接收到私信的回调方法
         websocket.onmessage = function (event) {
-            // alert("收到服务器的新消息" + event.data);
+            // alert("收到服务器的新私信" + event.data);
             var message = eval("(" + event.data + ")");
             showMessage(message);
-        }
+        };
         //连接关闭的回调方法
         websocket.onclose = function () {
             alert("WebSocket连接已关闭，请刷新浏览器重新连接");
             websocket = '';
-        }
+        };
 
         //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
         window.onbeforeunload = function () {
@@ -1999,546 +2032,21 @@
 </script>
 <!--END——websocket脚本-->
 <!--BEGIN——预加载脚本-->
+
 <script>
     //请求聊天列表
+    <c:if test="${param.method!='home.do'}">
     loadChatListAndBox();
     loadFriendList();
     connectWebsocket();
     loadSelectWeibo();
+    </c:if>
+    <c:if test="${param.method=='home.do'}">
+    loadMyTweet(1);
+    </c:if>
 </script>
 <!--END——预加载脚本-->
 </body>
-<style>
-    .info-box {
-        position: relative;
-        background-color: #eee;
-        overflow: hidden
-    }
-
-    .info-box-head {
-        text-align: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        line-height: 40px
-    }
-
-    .info-head-img {
-        width: 220px;
-        height: 220px;
-        margin: 62px;
-        border-radius: 14px;
-        float: left;
-    }
-
-    .info-head-info {
-        float: left;
-        margin-top: 89px;
-        max-width: 360px;
-        overflow: hidden
-    }
-
-    .info-head-nickname {
-        font-size: 53px;
-        max-height: 200px;
-        overflow: hidden;
-        word-wrap: break-word;
-        word-break: break-all;
-    }
-
-    .info-box-title {
-        position: relative;
-        padding: 10px 0;
-        margin: 0 19px;
-        border-bottom: 1px solid #d6d6d6;
-        background-color: #eee;
-        z-index: 1024
-    }
-
-    .info-box-title-box {
-        font-weight: 400;
-        height: 25px;
-        display: inline-block;
-        font-size: 23px;
-        float: left
-    }
-
-    .info-box-title-text {
-        display: inline-block;
-        vertical-align: middle;
-        max-width: 300px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: normal;
-        text-decoration: none;
-        color: #000;
-        font-weight: 400;
-    }
-
-    .info-outline {
-        float: left;
-        height: fit-content;
-        width: 100%;
-    }
-
-    .info-detail {
-        float: left;
-        height: fit-content;
-        width: 100%;
-    }
-
-    .info-detail-block {
-        float: left;
-        height: fit-content;
-        width: 100%;
-        margin-bottom: 20px;
-        min-width: 850px;
-    }
-
-    .info-detail-item {
-        height: 50px;
-        font-size: 34px;
-        padding-left: 62px;
-        text-align: left;
-        position: absolute;
-        width: 255px;
-    }
-
-    .info-detail-value {
-        text-align: left;
-        width: 800px;
-        font-size: 34px;
-        height: 50px;
-        position: relative;
-        margin-left: 300px;
-        border-bottom: solid 2px #ccc;
-        outline: none;
-        white-space: nowrap;
-    }
-
-    .input-text-content {
-        border-top: 1px solid #d6d6d6;
-        height: 200px;
-        width: 90%;
-        margin-left: 30px;
-        margin-right: 30px;
-        margin-bottom: 15px;
-        resize: none;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-left: 20px;
-        outline: solid;
-        border: 0;
-        font-size: 25px;
-        background-color: #eee
-    }
-
-    .info-submit-box {
-        position: fixed;
-        height: 250px;
-        bottom: 0;
-        min-height: 250px;
-        border-top: 1px solid #d6d6d6;
-    }
-
-    .info-detail-box {
-        overflow: scroll;
-        position: relative;
-        margin-bottom: 0px;
-        margin-right: 0px;
-        margin-top: 80px;
-        min-height: 682px;
-        height: -webkit-fill-available;
-    }
-
-    .page-body {
-        min-width: 800px;
-        margin: 0 auto;
-        border-radius: 3px;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .menu {
-        width: 30%;
-        position: relative;
-        /*height: 750px;*/
-        height: -webkit-fill-available;
-        min-height: 750px;
-        float: left;
-        overflow: scroll;
-        background: #2e3238;
-        display: block;
-    }
-
-    .menu-head {
-        padding: 18px;
-        position: relative;
-    }
-
-    .menu-head-photo {
-        display: table-cell;
-        vertical-align: middle;
-        word-wrap: break-word;
-        word-break: break-all;
-        white-space: nowrap;
-        padding-right: 10.625px;
-    }
-
-    .menu-head-img {
-        width: 60px;
-        height: 60px;
-        border-radius: 2px;
-        -moz-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        display: block;
-        cursor: pointer;
-    }
-
-    .menu-head-info {
-        display: table-cell;
-        vertical-align: middle;
-        word-wrap: break-word;
-        word-break: break-all;
-        width: 2000px;
-    }
-
-    .menu-head-nickname {
-        font-weight: 400;
-        font-size: 30px;
-        color: #fff;
-        line-height: 20px;
-        margin-top: 5px;
-    }
-
-    .menu-search {
-        position: relative;
-        width: -webkit-fill-available;
-        margin: 30px;
-    }
-
-    .menu-search-icon {
-        position: absolute;
-        z-index: 101;
-        top: 1px;
-    }
-
-    .search-button {
-        padding: 13px;
-        float: right;
-        height: 50px;
-        width: 55px;
-        background-color: #3A3F45;
-        color: white;
-    }
-
-
-    .menu-search-bar {
-        height: 50px;
-        line-height: 32px;
-        border: 0;
-        border-radius: 2px;
-        -moz-border-radius: 2px;
-        -webkit-border-radius: 2px;
-        background-color: #26292e;
-        color: #fff;
-        padding-left: 10px;
-        font-size: 20px;
-        width: 70%;
-    }
-
-    .menu-option {
-        overflow: hidden;
-        position: relative;
-        padding-bottom: 4px;
-    }
-
-    .menu-option-item {
-        float: left;
-        width: 25%;
-        position: relative;
-    }
-
-    .menu-option-button {
-        padding: 13px;
-        margin: auto;
-        height: 39px;
-        width: 90px;
-        background-color: #3A3F45;
-        color: white;
-    }
-
-
-    .menu-option-chat {
-        display: block;
-        text-align: center;
-    }
-
-    .user-photo {
-        float: left;
-        margin-right: 10px;
-        position: relative
-    }
-
-    .my-photo {
-        display: block;
-        width: 60px;
-        height: 60px;
-        border-radius: 2px;
-        -moz-border-radius: 2px;
-        -webkit-border-radius: 2px
-    }
-
-    .user-list-block-href {
-        background: #2e3238;
-        border: 0px;
-        outline: none;
-    }
-
-    .user-list-block {
-        display: block;
-    }
-
-    .user-info {
-        overflow: hidden;
-        height: 60px;
-    }
-
-    .user-box {
-        overflow: hidden;
-        padding: 12px 18px 11px;
-        border-bottom: 1px solid #292c33;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .my-name {
-        font-weight: 400;
-        font-size: 20px;
-        color: #fff;
-        line-height: 20px;
-        margin-top: 5px;
-        float: left;
-        width: 100%;
-        text-align: left;
-
-    }
-
-    .my-message {
-        color: #989898;
-        font-size: 17px;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: normal;
-        height: 1.5em;
-        float: left;
-        text-align: left;
-        margin-right: 20px;
-        width: 300px;
-
-    }
-
-    .chat-box {
-        position: relative;
-        background-color: #eee;
-        height: -webkit-fill-available;
-        overflow: hidden
-    }
-
-    .chat-box-head {
-        text-align: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        line-height: 40px;
-        background-color: #eee;
-
-    }
-
-    .chat-box-title {
-        position: fixed;
-        /* padding: 10px 0; */
-        padding-left: 20px;
-        padding-right: 20px;
-        /* align-items: center; */
-        /* margin: 0 19px; */
-        /* width: auto; */
-        width: -webkit-fill-available;
-        max-width: 70%;
-        border-bottom: 1px solid #d6d6d6;
-        background-color: #eee;
-        z-index: 999;
-        right: 0px;
-        height: 60px;
-    }
-
-    .chat-box-title-box {
-        font-weight: 400;
-        height: 25px;
-        display: inline-block;
-        font-size: 23px;
-    }
-
-    .chat-box-title-text {
-        vertical-align: middle;
-        max-width: 70%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: normal;
-        text-decoration: none;
-        color: #000;
-        font-weight: 400;
-        width: fit-content;
-        position: fixed;
-        height: fit-content;
-        display: inline-block;
-        font-size: 23px;
-        margin-top: 10px
-    }
-
-    .chat-input-box {
-        position: fixed;
-        height: 200px;
-        bottom: 0;
-        min-height: 200px;
-        border-top: 1px solid #d6d6d6;
-    }
-
-    .text-area {
-        border-top: 1px solid #d6d6d6;
-        height: 200px;
-        width: 100%;
-        margin-bottom: 15px;
-        resize: none;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-left: 20px;
-        outline: none;
-        border: 0;
-        font-size: 25px;
-        background-color: #eee;
-    }
-
-    .chat-output-box {
-        background: transparent;
-        position: relative;
-        /* margin-bottom: 200px; */
-        padding-bottom: 200px;
-        padding-top: 80px;
-        margin-right: 0px;
-        /* margin-top: 80px; */
-        min-height: 443px;
-        /* max-height: 473px; */
-        height: -webkit-fill-available;
-        overflow: scroll;
-    }
-
-    .chat-output-head-photo-right {
-        float: right;
-        width: 60px;
-        height: 60px;
-        margin-right: 15px;
-    }
-
-    .chat-output-head-photo-left {
-        float: left;
-        width: 60px;
-        height: 60px;
-        margin-left: 15px;
-        margin-top: 15px
-    }
-
-    .chat-output-content-right {
-        overflow: hidden;
-        text-align: right;
-    }
-
-    .chat-output-content-left {
-        overflow: hidden;
-        text-align: left;
-    }
-
-    .chat-output-meta-left {
-        font-weight: 400;
-        padding-left: 10px;
-        height: 20px;
-        line-height: 18px;
-        color: #4f4f4f;
-        width: 500px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        word-wrap: normal;
-        margin-top: 22px
-    }
-
-    .chat-output-bubble-right {
-        max-width: 500px;
-        /*min-height: 55px;*/
-        display: inline-block;
-        vertical-align: top;
-        position: relative;
-        text-align: left;
-        font-size: 20px;
-        -webkit-border-radius: 3px;
-        margin-right: 10px;
-
-    }
-
-    .chat-output-bubble-left {
-        background-color: #eeeeee;
-        max-width: 500px;
-        /*min-height: 55px;*/
-        display: inline-block;
-        vertical-align: top;
-        position: relative;
-        text-align: left;
-        font-size: 20px;
-        -webkit-border-radius: 3px;
-        margin-left: 10px;
-
-    }
-
-    .chat-output-bubble-inner {
-        word-wrap: break-word;
-        word-break: break-all;
-        min-height: 25px;
-    }
-
-    .chat-output-bubble-pre-right {
-        background-color: #b2e281;
-        margin: 0;
-        font-family: inherit;
-        font-size: inherit;
-        white-space: pre-wrap;
-        word-break: normal;
-    }
-
-    .chat-output-bubble-pre-left {
-        margin: 0;
-        font-family: inherit;
-        font-size: inherit;
-        white-space: pre-wrap;
-        word-break: normal;
-    }
-
-    .button {
-        float: right;
-        outline: none;
-        border: none;
-        height: 40px;
-        margin-top: 10px;
-        margin-right: 5px;
-        z-index: 99;
-    }
-</style>
 </html>
 
 

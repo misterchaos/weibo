@@ -58,7 +58,7 @@ public class RemarkServiceImpl implements RemarkService {
      * @date 2019/5/14
      */
     @Override
-    public ServiceResult addRemark(Remark remark) {
+    public ServiceResult addRemark(BigInteger userId,Remark remark) {
         if (remark == null) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
         }

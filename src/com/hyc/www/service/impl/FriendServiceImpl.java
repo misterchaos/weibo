@@ -46,7 +46,7 @@ public class FriendServiceImpl implements FriendService {
     private final FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
     private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
     private final ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
-    private final MessageDao messageDao = (MessageDao)DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
+    private final MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
 
     /**
      * 添加好友关系
@@ -97,16 +97,16 @@ public class FriendServiceImpl implements FriendService {
                 return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
             }
             //添加好友后如果已经双向加好友，则不用发申请，而是把之前的申请消息删除
-            if(isFriend(friend)){
+            if (isFriend(friend)) {
                 //查询自己与系统建立的聊天,用于查找发送好友申请那条消息并删除
                 message.setSenderId(friend.getFriendId());
-                Friend systemFriend = friendDao.getFriendByUIDAndFriendId(friend.getUserId(),UserServiceImpl.SYSTEM_ID);
-                if(systemFriend==null){
+                Friend systemFriend = friendDao.getFriendByUIDAndFriendId(friend.getUserId(), UserServiceImpl.SYSTEM_ID);
+                if (systemFriend == null) {
                     return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
                 }
                 message.setChatId(systemFriend.getChatId());
                 messageDao.delete(message);
-            }else {
+            } else {
                 //如果对方是普通用户，需要发送加好友通知
                 if (!UserServiceImpl.SYSTEM_ID.equals(friend.getFriendId()) && !UserServiceImpl.SYSTEM_ID.equals(friend.getUserId())) {
                     //获取好友与系统的聊天，用于推送通知
@@ -161,6 +161,71 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
+     * 返回一个用户关注的人
+     *
+     * @param userId
+     * @return
+     * @name listFollow
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Override
+    public ServiceResult listFollow(Object userId) {
+
+        if (userId == null) {
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message, null);
+        }
+        List<Friend> list;
+        try {
+            list = friendDao.listByUserId(userId);
+            if (list.size() == 0) {
+                return new ServiceResult(Status.SUCCESS, NO_FOLLOW_NOW.message, userId);
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, userId);
+        }
+        return new ServiceResult(Status.SUCCESS, null, list);
+    }
+
+    /**
+     * 返回一个用户的粉丝
+     *
+     * @param userId
+     * @return
+     * @name listMyfans
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Override
+    public ServiceResult listMyFans(Object userId) {
+
+        if (userId == null) {
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message, null);
+        }
+        List<User> userList = new LinkedList<>();
+        try {
+            List<Friend> list = friendDao.listFansByUserId(userId);
+            if (list.size() == 0) {
+                return new ServiceResult(Status.SUCCESS, NO_FAN_NOW.message, userId);
+            }
+            //返回粉丝用户
+            for (Friend friend : list) {
+                User user = userDao.getUserById(friend.getUserId());
+                if (user != null) {
+                    userList.add(user);
+                }
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, userId);
+        }
+        return new ServiceResult(Status.SUCCESS, null, userList);
+    }
+
+    /**
      * 更新好友信息
      *
      * @param friend 朋友
@@ -209,11 +274,6 @@ public class FriendServiceImpl implements FriendService {
             //检查成员是否存在
             if (friendDao.getFriendByUIDAndFriendId(friend.getUserId(), friend.getFriendId()) != null) {
                 //将该成员从聊天中移除
-                if (friendDao.delete(friend) != 1) {
-                    return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
-                }
-                //将对方的的朋友记录也删除
-                friend = friendDao.getFriendByUIDAndFriendId(friend.getFriendId(), friend.getUserId());
                 if (friendDao.delete(friend) != 1) {
                     return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
                 }

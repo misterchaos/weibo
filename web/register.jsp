@@ -31,8 +31,6 @@
     <meta charset="utf-8">
     <title>weibo</title>
     <link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/static/img/icon.ico" />
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>
     <script>
         function register() {
             var email = document.getElementById("email").value;
@@ -119,6 +117,7 @@
     }
 
     .form-control {
+        display: block;
         padding: 10px;
         min-height: 55px;
         max-height: 70px;

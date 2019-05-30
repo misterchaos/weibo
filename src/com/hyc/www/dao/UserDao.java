@@ -32,7 +32,7 @@ import java.util.List;
 public interface UserDao extends BaseDao {
     String TABLE = "user";
     String ALL_FIELD = "email,weibo_id,phone,password,gender,signature,name,photo"
-            + ",chat_background,location,online_status," + BASE_FIELD;
+            + ",chat_background,location,online_status,type," + BASE_FIELD;
 
 
     /**

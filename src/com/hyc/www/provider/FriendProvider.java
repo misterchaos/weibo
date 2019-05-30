@@ -16,7 +16,7 @@
 
 package com.hyc.www.provider;
 
-import com.hyc.www.controller.constant.RequestMethod;
+import com.hyc.www.provider.constant.RequestMethod;
 import com.hyc.www.factory.ServiceProxyFactory;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Chat;
@@ -77,7 +77,6 @@ public class FriendProvider extends BaseProvider {
         }
         //添加好友后判断是否对方也将自己添加为好友，如果双向添加，则建立聊天关系，否则发送好友通知
         if (friendService.isFriend(friend)) {
-
             Chat chat = (Chat) chatService.createFriendChat(friend).getData();
             //发送打招呼消息
             Message message = new Message();
@@ -89,8 +88,6 @@ public class FriendProvider extends BaseProvider {
             ChatServer.sendNotify(message, friend.getFriendId());
             ChatServer.sendNotify(message, friend.getUserId());
             messageService.insertMessage(message);
-            //初始化朋友圈
-            tweetService.initNews(friend);
         } else {
             //生成的加好友通知，发送实时通知并存到数据库
             Message message = (Message) result.getData();
@@ -117,9 +114,9 @@ public class FriendProvider extends BaseProvider {
     }
 
     /**
-     * 提供获取好友列表的服务
+     * 提供更新好友信息的服务
      *
-     * @name listFriend
+     * @name updateFriend
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
@@ -131,6 +128,43 @@ public class FriendProvider extends BaseProvider {
         result = friendService.updateFriend(friend);
         returnJsonObject(resp, result);
     }
+
+
+
+    /**
+     * 提供获取我的关注列表的服务
+     *
+     * @name follow
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Action(method = RequestMethod.FOLLOW_DO)
+    public void follow(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String userId = req.getParameter("user_id");
+        ServiceResult result;
+        result = friendService.listFollow(userId);
+        returnJsonObject(resp, result);
+    }
+
+
+    /**
+     * 提供获取我的粉丝列表的服务
+     *
+     * @name fans
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Action(method = RequestMethod.FANS_DO)
+    public void fans(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String userId = req.getParameter("user_id");
+        ServiceResult result;
+        result = friendService.listMyFans(userId);
+        returnJsonObject(resp, result);
+    }
+
+
 
     /**
      * 提供删除好友的服务

@@ -17,8 +17,8 @@
 package com.hyc.www.controller.impl.filter;
 
 import com.hyc.www.controller.constant.ControllerMessage;
-import com.hyc.www.controller.constant.RequestMethod;
-import com.hyc.www.controller.constant.WebPage;
+import com.hyc.www.provider.constant.RequestMethod;
+import com.hyc.www.provider.constant.WebPage;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.User;
 import com.hyc.www.provider.UserProvider;
@@ -69,7 +69,8 @@ public class LoginFilter implements Filter {
                     (WebPage.REGISTER_JSP.toString()).equalsIgnoreCase(path) ||
                     (RequestMethod.LOGIN_DO.toString()).equalsIgnoreCase(method) ||
                     (RequestMethod.REGISTER_DO.toString()).equalsIgnoreCase(method) ||
-                    path.endsWith("logo.png") || path.endsWith(".js") || path.endsWith("agreement.html")) {
+                    path.endsWith("logo.png") || path.endsWith(".js") ||
+                    path.endsWith("agreement.html")||path.endsWith("css")) {
                 filterChain.doFilter(req, resp);
                 return;
             } else {

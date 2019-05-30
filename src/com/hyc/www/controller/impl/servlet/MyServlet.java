@@ -63,23 +63,22 @@ public class MyServlet extends HttpServlet {
         String url = req.getRequestURI();
         Set<String> keys = providerMap.keySet();
         Logger logger = Logger.getLogger(MyServlet.class);
-        logger.info("[请求url:]"+url+"[匹配provider]:"+url.substring(12));
+        logger.debug("[请求url:]"+url+"[匹配provider]:"+url.substring(12));
         boolean isMatch=false;
         for (String key : keys) {
             //解析注解中的path信息，匹配ActionProvider
             String path =providerMap.get(key).getPath();
             if (url.substring(12).equalsIgnoreCase(path)) {
                 providerMap.get(key).doAction(req, resp);
-                logger.info("provider 分发完毕");
+                logger.debug("provider 分发完毕");
                 isMatch=true;
             }
         }
         if(!isMatch){
             toErrorPage(ControllerMessage.REQUEST_INVALID.message,req,resp);
-            logger.info("该请求没有匹配provider :"+url.substring(14));
+            logger.debug("该请求没有匹配provider :"+url.substring(14));
             return;
         }
-//        logger.info("响应结果 "+resp.getOutputStream());
     }
 
 

@@ -16,7 +16,8 @@
 
 package com.hyc.www.provider;
 
-import com.hyc.www.controller.constant.RequestMethod;
+import com.hyc.www.model.po.User;
+import com.hyc.www.provider.constant.RequestMethod;
 import com.hyc.www.factory.ServiceProxyFactory;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Remark;
@@ -25,7 +26,6 @@ import com.hyc.www.provider.annotation.ActionProvider;
 import com.hyc.www.service.RemarkService;
 import com.hyc.www.service.impl.RemarkServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -55,7 +55,8 @@ public class RemarkProvider extends BaseProvider {
     public void postRemark(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Remark remark = (Remark) jsonToJavaObject(req.getInputStream(), Remark.class);
         ServiceResult result;
-        result = remarkService.addRemark(remark);
+        User user = (User) req.getSession().getAttribute("login");
+        result = remarkService.addRemark(user.getId(),remark);
         returnJsonObject(resp, result);
     }
 

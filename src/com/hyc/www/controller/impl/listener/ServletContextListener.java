@@ -37,7 +37,6 @@ public class ServletContextListener implements javax.servlet.ServletContextListe
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-
         /**
          * 用来装载provider的容器
          */

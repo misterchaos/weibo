@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package com.hyc.www.provider.annotation;
-
-
-import com.hyc.www.provider.constant.RequestMethod;
-
-import java.lang.annotation.*;
+package com.hyc.www.service.constants;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 用于注解服务流程
- * @date 2019-05-02 09:42
+ * @description 聊天类型
+ * @date 2019-05-14 17:20
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Action {
-    String path()default "";
-    RequestMethod method();
+public enum UserType {
+    /**
+     * 用户
+     */
+    USER,
+    /**
+     * 管理员
+     */
+    ADMIN;
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
+
 }

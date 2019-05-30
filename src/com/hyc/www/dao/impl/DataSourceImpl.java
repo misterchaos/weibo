@@ -157,7 +157,7 @@ public class DataSourceImpl implements DataSource {
     @Override
     public Connection getConnection() throws DaoException {
         Logger log = Logger.getLogger(DataSourceImpl.class);
-        log.info("连接池已创建连接数" + getCurrentCount() + "空闲连接数" + getfreeCount());
+        log.debug("连接池已创建连接数" + getCurrentCount() + "空闲连接数" + getfreeCount());
         synchronized (connPool) {
             if (connPool.size() > 0) {
                 /**

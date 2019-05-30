@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hyc.www.controller.constant;
+package com.hyc.www.provider.constant;
 
 /**
  * request中method的枚举常量
@@ -57,7 +57,22 @@ public enum RequestMethod {
      * 更新密码
      */
     UPDATEPASSWORD_DO,
-
+    /**
+     * 个人主页
+     */
+    HOME_DO,
+    /**
+     * 获取关注列表
+     */
+    FOLLOW_DO,
+    /**
+     * 获取粉丝列表
+     */
+    FANS_DO,
+    /**
+     * 冻结用户
+     */
+    FREEZE_DO,
     /*
      **************************************************************
      *               聊天功能模块
@@ -151,6 +166,7 @@ public enum RequestMethod {
      * 更新聊天背景
      */
     BACKGROUND_DO,
+
     /**
      * 添加
      */
@@ -163,6 +179,7 @@ public enum RequestMethod {
      * 更新
      */
     UPDATE_DO,
+
     /**
      * 查找一个对象
      */

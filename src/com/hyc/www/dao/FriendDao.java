@@ -63,8 +63,22 @@ public interface FriendDao extends BaseDao {
     @Result(entity = Friend.class, returns = ResultType.LIST)
     @Query(value = "select f.id,f.user_id,f.friend_id,f.chat_id,f.group_id,f.alias,f.description,u.photo as photo,f.status,f.gmt_create,f.gmt_modified " +
             "from " + TABLE + " as f,user as u where f.user_id = ? and u.id = f.friend_id ")
-    List listByUserId(Object userId);
+    List<Friend> listByUserId(Object userId);
 
+    /**
+     * 通过用户id查询粉丝
+     *
+     * @param userId 用户id
+     * @return
+     * @name listFansByUserId
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    @Result(entity = Friend.class, returns = ResultType.LIST)
+    @Query(value = "select f.id,f.user_id,f.friend_id,f.chat_id,f.group_id,f.alias,f.description,u.photo as photo,f.status,f.gmt_create,f.gmt_modified " +
+            "from " + TABLE + " as f,user as u where f.friend_id = ? and u.id = f.user_id ")
+    List<Friend> listFansByUserId(Object userId);
 
     /**
      * 通过朋友关系id查询一个朋友关系

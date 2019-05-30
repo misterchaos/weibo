@@ -69,7 +69,7 @@ public class SQLRunnerImpl implements SQLRunner {
              */
             sql = ps.toString();
             Logger logger = Logger.getLogger(SQLRunnerImpl.class);
-            logger.info("执行预编译更新语句 ： " + sql);
+            logger.debug("执行预编译更新语句 ： " + sql);
             return ps.executeUpdate();
         } catch (SQLException e) {
             Logger logger = Logger.getLogger(SQLRunnerImpl.class);
@@ -129,7 +129,7 @@ public class SQLRunnerImpl implements SQLRunner {
              */
             sql = ps.toString();
             Logger logger = Logger.getLogger(SQLRunnerImpl.class);
-            logger.info("执行预编译更新语句 ： " + sql);
+            logger.debug("执行预编译更新语句 ： " + sql);
             result = ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -278,7 +278,7 @@ public class SQLRunnerImpl implements SQLRunner {
                 Statement st = conn.createStatement();
                 ResultSet rs = st.executeQuery(sql);
                 Logger logger = Logger.getLogger(SQLRunnerImpl.class);
-                logger.info("执行预编译查询语句 ： " + sql);
+                logger.debug("执行预编译查询语句 ： " + sql);
                 return mapper.doMap(rs);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -295,7 +295,7 @@ public class SQLRunnerImpl implements SQLRunner {
              * 调用接口中的方法映射结果集，使用时该接口必须有实现类
              */
             Logger logger = Logger.getLogger(SQLRunnerImpl.class);
-            logger.info("执行预编译查询语句 ： " + sql);
+            logger.debug("执行预编译查询语句 ： " + sql);
             return mapper.doMap(rs);
         } catch (SQLException e) {
             Logger logger = Logger.getLogger(SQLRunnerImpl.class);

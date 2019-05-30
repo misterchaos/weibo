@@ -17,7 +17,7 @@
 package com.hyc.www.util;
 
 import com.alibaba.fastjson.JSON;
-import com.hyc.www.controller.constant.RequestMethod;
+import com.hyc.www.provider.constant.RequestMethod;
 import com.hyc.www.model.dto.ServiceResult;
 import org.apache.log4j.Logger;
 
@@ -68,8 +68,6 @@ public class ControllerUtils {
     public static void returnJsonObject(HttpServletResponse resp, ServiceResult result) throws IOException {
         JSON json = (JSON) JSON.toJSON(result);
         resp.getWriter().write(json.toJSONString());
-        Logger logger = Logger.getLogger(ControllerUtils.class);
-        logger.info(json.toJSONString());
     }
 }
 

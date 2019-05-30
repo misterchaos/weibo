@@ -16,7 +16,8 @@
 
 package com.hyc.www.provider;
 
-import com.hyc.www.controller.constant.RequestMethod;
+import com.hyc.www.model.po.User;
+import com.hyc.www.provider.constant.RequestMethod;
 import com.hyc.www.factory.ServiceProxyFactory;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Tweet;
@@ -54,8 +55,9 @@ public class TweetProvider extends BaseProvider {
     @Action(method = RequestMethod.ADD_DO)
     public void postTweet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Tweet tweet = (Tweet) jsonToJavaObject(req.getInputStream(), Tweet.class);
+        User user = (User) req.getSession().getAttribute("login");
         ServiceResult result;
-        result = tweetService.insertTweet(tweet);
+        result = tweetService.insertTweet(user.getId(),tweet);
         returnJsonObject(resp, result);
     }
 
@@ -155,9 +157,12 @@ public class TweetProvider extends BaseProvider {
     @Action(method = RequestMethod.LOVE_DO)
     public void love(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
-        String momentId = req.getParameter("tweet_id");
+        String tweetId = req.getParameter("tweet_id");
         ServiceResult result;
-        result = tweetService.love(new BigInteger(userId), new BigInteger(momentId));
+        result = tweetService.love(new BigInteger(userId), new BigInteger(tweetId));
         returnJsonObject(resp, result);
     }
+
+
+
 }

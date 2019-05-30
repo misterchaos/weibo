@@ -72,7 +72,6 @@ public class UploadServiceImpl implements UploadService {
             } else if ("moment".equalsIgnoreCase(tableName)) {
                 Tweet tweet = new Tweet();
                 tweet.setId(new BigInteger(String.valueOf(id)));
-//                tweet.setPhoto(fileName);
                 if (tweetDao.update(tweet) != 1) {
                     return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, tweet);
                 }

@@ -38,7 +38,6 @@ public interface FriendService {
     ServiceResult addFriend(Friend friend);
 
 
-
     /**
      * 返回一个用户的好友列表
      *
@@ -50,6 +49,31 @@ public interface FriendService {
      * @date 2019/5/6
      */
     ServiceResult listFriend(Object userId);
+
+
+    /**
+     * 返回一个用户关注的人
+     *
+     * @param userId
+     * @return
+     * @name listFollow
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    ServiceResult listFollow(Object userId);
+
+    /**
+     * 返回一个用户的粉丝
+     *
+     * @param userId
+     * @return
+     * @name listMyfans
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    ServiceResult listMyFans(Object userId);
 
     /**
      * 更新好友信息
@@ -63,7 +87,6 @@ public interface FriendService {
     ServiceResult updateFriend(Friend friend);
 
 
-
     /**
      * 移除好友
      *
@@ -75,6 +98,7 @@ public interface FriendService {
      * @date 2019/5/6
      */
     ServiceResult removeFriend(Friend friend);
+
 
     /**
      * 判断是否存在一条这样的朋友记录

@@ -16,8 +16,8 @@
 
 package com.hyc.www.provider;
 
-import com.hyc.www.controller.constant.RequestMethod;
-import com.hyc.www.controller.constant.WebPage;
+import com.hyc.www.provider.constant.RequestMethod;
+import com.hyc.www.provider.constant.WebPage;
 import com.hyc.www.exception.ServiceException;
 import com.hyc.www.provider.annotation.Action;
 import com.hyc.www.provider.annotation.ActionProvider;

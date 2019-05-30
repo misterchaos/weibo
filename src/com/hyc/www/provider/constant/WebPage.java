@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hyc.www.controller.constant;
+package com.hyc.www.provider.constant;
 
 /**
  * 界面的地址常量
@@ -38,34 +38,11 @@ public enum WebPage {
      * 错误页面
      */
     ERROR_JSP,
-    /**
-     * 房间页面
-     */
-    ROOM_JSP,
+
     /**
      * 登陆界面
      */
-    LOGIN_JSP,
-    /**
-     * 用户界面
-     */
-    USER_JSP,
-    /**
-     * 订单界面
-     */
-    ORDER_JSP,
-    /**
-     * 成功页面
-     */
-    SUCCESS_JSP,
-    /**
-     * 评论界面
-     */
-    REMARK_JSP,
-    /**
-     * 相册页面
-     */
-    PICTRUES_JSP;
+    LOGIN_JSP;
 
     @Override
     public String toString() {

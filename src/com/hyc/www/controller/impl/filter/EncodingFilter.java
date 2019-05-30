@@ -17,7 +17,7 @@
 package com.hyc.www.controller.impl.filter;
 
 import com.hyc.www.controller.constant.ControllerMessage;
-import com.hyc.www.controller.constant.WebPage;
+import com.hyc.www.provider.constant.WebPage;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
@@ -61,7 +61,6 @@ public class EncodingFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         try {
             req.setCharacterEncoding(ENCODING);
-            resp.setContentType("text/html;charset=utf-8");
             resp.setCharacterEncoding(ENCODING);
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.addHeader("Access-Control-Allow-Headers",
@@ -81,7 +80,7 @@ public class EncodingFilter implements Filter {
             }
         }
         Logger logger = Logger.getLogger(EncodingFilter.class);
-        logger.info("[请求url] : " + req.getRequestURI() + " [请求参数] ：" + req.getQueryString());
+        logger.debug("[请求url] : " + req.getRequestURI() + " [请求参数] ：" + req.getQueryString());
     }
 }
 

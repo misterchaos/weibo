@@ -18,6 +18,7 @@ package com.hyc.www.service;
 
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.Remark;
+import com.hyc.www.service.annotation.Freeze;
 
 import java.math.BigInteger;
 
@@ -34,7 +35,8 @@ public interface RemarkService {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/14
      */
-    ServiceResult addRemark(Remark remark);
+    @Freeze
+    ServiceResult addRemark(BigInteger userId,Remark remark);
     /**
      * 查询一条评论
      *

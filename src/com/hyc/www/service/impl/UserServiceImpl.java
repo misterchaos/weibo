@@ -22,6 +22,7 @@ import com.hyc.www.factory.DaoProxyFactory;
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.User;
 import com.hyc.www.service.UserService;
+import com.hyc.www.service.constants.ServiceMessage;
 import com.hyc.www.service.constants.Status;
 
 import java.math.BigInteger;
@@ -226,7 +227,7 @@ public class UserServiceImpl implements UserService {
      * @return 返回用户的个人信息
      */
     @Override
-    public ServiceResult getUser(Object id) {
+    public ServiceResult getUser(BigInteger id) {
         if(id==null){
             return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
         }
@@ -304,6 +305,37 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 冻结一个用户
+     *
+     * @param operatorId 操作者id
+     * @param userId     被冻结用户id
+     * @return
+     * @name freezeUser
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Override
+    public ServiceResult freezeUser(BigInteger operatorId, BigInteger userId) {
+        if(userId==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
+        try{
+            //更新用户状态为1
+            User user = new User();
+            user.setId(userId);
+            user.setStatus(1);
+            if(userDao.update(user)!=1){
+                return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,userId);
+            }
+        }catch (DaoException e){
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,userId);
+        }
+        return new ServiceResult(Status.SUCCESS,FREEZE_SUCCESS.message,userId);
+    }
+
+    /**
      * 创建一个游客账号，并自动通过登陆
      *
      * @name visitorLogin
@@ -332,6 +364,7 @@ public class UserServiceImpl implements UserService {
         }
         return new ServiceResult(Status.SUCCESS, LOGIN_SUCCESS.message,visitor);
     }
+
 
     /*
      **************************************************************

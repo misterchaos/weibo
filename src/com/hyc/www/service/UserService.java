@@ -18,6 +18,7 @@ package com.hyc.www.service;
 
 import com.hyc.www.model.dto.ServiceResult;
 import com.hyc.www.model.po.User;
+import com.hyc.www.service.annotation.Admin;
 
 import java.math.BigInteger;
 
@@ -66,7 +67,7 @@ public interface UserService {
      * @param id 用户id
      * @return 返回用户的个人信息
      */
-    ServiceResult getUser(Object id);
+    ServiceResult getUser(BigInteger id);
 
 
     /**
@@ -85,7 +86,7 @@ public interface UserService {
      * @param userId 用户id
      * @return 返回传入的用户对象，如果由密码信息/邮箱信息，将被清空
      */
-    ServiceResult updatePwd(String oldPwd, String newPwd , BigInteger userId);
+    ServiceResult updatePwd(String oldPwd, String newPwd, BigInteger userId);
 
     /**
      * 返回昵称与传入参数相似的用户列表
@@ -109,6 +110,20 @@ public interface UserService {
      */
     ServiceResult visitorLogin();
 
+
+    /**
+     * 冻结一个用户
+     *
+     * @param operatorId 操作者id
+     * @param userId     被冻结用户id
+     * @return
+     * @name freezeUser
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/30
+     */
+    @Admin
+    ServiceResult freezeUser(BigInteger operatorId, BigInteger userId);
 
 
 }

@@ -25,17 +25,17 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 负责朋友圈的CRUD
+ * @description 负责微博的CRUD
  * @date 2019-05-07 11:55
  */
 public interface TweetDao extends BaseDao {
     String TABLE = "tweet";
-    String ALL_FIELD = "owner_id,content,sort,time,love,remark,share,view," + BASE_FIELD;
+    String ALL_FIELD = "owner_id,content,origin_id,sort,time,love,remark,share,view," + BASE_FIELD;
 
     /**
-     * 通过朋友圈id查询一个朋友圈
+     * 通过微博id查询一个微博
      *
-     * @param id 朋友圈id
+     * @param id 微博id
      * @name geTweetById
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -46,7 +46,7 @@ public interface TweetDao extends BaseDao {
     Tweet getTweetById(Object id);
 
     /**
-     * 通过用户id和状态查询一个朋友圈
+     * 通过用户id和状态查询一个微博
      *
      * @param ownerId 用户id
      * @param stauts 状态
@@ -60,7 +60,7 @@ public interface TweetDao extends BaseDao {
 
 
     /**
-     * 通过用户id逆序查询所有自己发布的朋友圈
+     * 通过用户id逆序查询所有自己发布的微博
      *
      * @param ownerId 用户id
      * @param limit  每页查询记录数
@@ -79,7 +79,7 @@ public interface TweetDao extends BaseDao {
 
 
     /**
-     * 通过用户id查询所有自己发布的朋友圈
+     * 通过用户id查询所有自己发布的微博
      *
      * @param ownerId 用户id
      * @param limit  每页查询记录数
@@ -126,7 +126,7 @@ public interface TweetDao extends BaseDao {
     List<Tweet> listTweetDesc(int limit, int offset);
 
     /**
-     * 通过用户id查询所有自己发布的朋友圈中的图片
+     * 通过用户id查询所有自己发布的微博中的图片
      *
      * @param ownerId 用户id
      * @param limit  每页查询记录数

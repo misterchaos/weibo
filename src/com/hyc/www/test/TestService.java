@@ -56,7 +56,6 @@ public class TestService {
         Tweet tweet =new Tweet();
         tweet.setOwnerId(BigInteger.valueOf(0));
         tweet.setContent("第一条朋友圈");
-        tweetService.insertTweet(tweet);
         tweetService.removeTweet(BigInteger.valueOf(8));
         tweetService.listMyTweet(BigInteger.valueOf(0),1);
 
