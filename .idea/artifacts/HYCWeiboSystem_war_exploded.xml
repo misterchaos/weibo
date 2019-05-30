@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="HYCWeiboSystem:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/HYCWeiboSystem_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="HYCWeiboSystem" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="fastjson-1.2.58" />
+          <element id="library" level="project" name="mysql-connector-java-8.0.15" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="HYCWeiboSystem/web/Web" />
+    </root>
+  </artifact>
+</component>

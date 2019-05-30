@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="mysql-connector-java-8.0.15">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/mysql-connector-java-8.0.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/tomcat-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsp-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/tomcat-juli.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/tomcat-websocket.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/tomcat-util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/websocket-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
